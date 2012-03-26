@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="SAF">
+	<property environment="env" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="project_name" value="SAF"/>
+	<property name="target" value="1.6" />
+	<property name="source" value="1.6" />
+	<property name="src" value="src" />
+	<property name="dest_dir" value="build" />
+	<property name="build_dir" value="${dest_dir}/classes" />
+	<property name="jar_name" value="${project_name}.jar" />
+	<property name="javadoc_dir" value="${dest_dir}/javadoc" />
+
+	<path id="build_classpath">
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<antcall target="clean">
+		</antcall>
+		<mkdir dir="${dest_dir}" />
+		<mkdir dir="${build_dir}" />
+		<mkdir dir="${javadoc_dir}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${dest_dir}" />
+	</target>
+
+	<target depends="build-project" name="build">
+		<jar jarfile="${dest_dir}/${jar_name}" basedir="${build_dir}" />
+	</target>
+
+	<target depends="init" name="build-project">
+		<javac debug="true" debuglevel="${debuglevel}" destdir="${build_dir}" source="${source}" target="${target}" encoding="UTF-8" includeantruntime="on">
+			<src path="src" />
+			<classpath refid="build_classpath" />
+		</javac>
+		<copy includeemptydirs="false" todir="${build_dir}">
+			<fileset dir="src">
+				<exclude name="**/*.launch" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="javadoc" description="Generate the Javadoc HTML pages.">
+		<delete dir="${javadoc_dir}" />
+		<mkdir dir="${javadoc_dir}" />
+		<javadoc destdir="${javadoc_dir}"   
+			                 windowtitle="${project_name} Project"  
+			                 use="yes"  
+			                 linksource="no"  
+			                 splitindex="yes"  
+			                 encoding="UTF-8" docencoding="UTF-8" charset="UTF-8">
+			<classpath refid="build_classpath" />
+			<packageset dir="${src}" defaultexcludes="yes" />
+		</javadoc>
+	</target>
+</project>
