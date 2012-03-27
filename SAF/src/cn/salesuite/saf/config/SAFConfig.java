@@ -7,7 +7,7 @@ package cn.salesuite.saf.config;
  * @author Tony Shen
  *
  */
-public class CONFIG {
+public class SAFConfig {
 
 	/**
 	 * Set Log level

@@ -7,7 +7,7 @@ package cn.salesuite.saf.config;
  * @author Tony Shen
  *
  */
-public class Constant {
+public class SAFConstant {
 
 	//os类型
 	public static final String SPECIAL_IMEI="000000000000000";

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import cn.salesuite.saf.config.Constant;
+import cn.salesuite.saf.config.SAFConstant;
 
 import android.app.Activity;
 import android.app.Application;
@@ -25,6 +25,10 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**
+ * SAFApp是自定义的Application,session可作为缓存存放app的全局变量<br>
+ * SAFApp并不是每个app都需要使用,可自由选择<br>
+ * 如需使用,则在AndroidManifest.xml中配置,<br>
+ * 在application中增加android:name="cn.salesuite.saf.SAFApp"
  * @author Tony Shen
  *
  */
@@ -80,7 +84,7 @@ public class SAFApp extends Application{
 			TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 			String imei = tm.getDeviceId();
 			// no sim: sdk|any pad
-			if (imei != null && !Constant.SPECIAL_IMEI.equals(imei)) {
+			if (imei != null && !SAFConstant.SPECIAL_IMEI.equals(imei)) {
 				Log.d("requestCount", "imei:" + imei);
 				return imei;
 			} else {
@@ -88,12 +92,12 @@ public class SAFApp extends Application{
 						Secure.ANDROID_ID);
 				// sdk: android_id
 				if (deviceId != null
-						&& !Constant.SPECIAL_ANDROID_ID.equals(deviceId)) {
+						&& !SAFConstant.SPECIAL_ANDROID_ID.equals(deviceId)) {
 					Log.d("requestCount", "ANDROID_ID:" + deviceId);
 					return deviceId;
 				} else {
 					SharedPreferences sp = this.getSharedPreferences(
-							Constant.SHARED, Activity.MODE_PRIVATE);
+							SAFConstant.SHARED, Activity.MODE_PRIVATE);
 					String uid = sp.getString("uid", null);
 					if (uid == null) {
 						SharedPreferences.Editor editor = sp.edit();
