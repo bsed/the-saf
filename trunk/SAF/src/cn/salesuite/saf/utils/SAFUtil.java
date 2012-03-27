@@ -6,7 +6,7 @@ package cn.salesuite.saf.utils;
 import java.io.File;
 import java.util.List;
 
-import cn.salesuite.saf.config.CONFIG;
+import cn.salesuite.saf.config.SAFConfig;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -19,10 +19,11 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 
 /**
+ * SAF的工具类
  * @author Tony Shen
  *
  */
-public class AppUtil {
+public class SAFUtil {
 
 	public static boolean isWiFiActive(Context context) { 
 		WifiManager wm=null;
@@ -48,6 +49,12 @@ public class AppUtil {
 		context.startActivity(intent);
 	}
 	
+	/**
+	 * 判断某个应用当前是否正在运行
+	 * @param context
+	 * @param packageName
+	 * @return
+	 */
 	public static boolean isAppRunning(Context context, String packageName) {
 		if (packageName == null)
 			return false;
@@ -76,6 +83,11 @@ public class AppUtil {
 		return false;
 	}
 	
+	/**
+	 * 检测网络状态
+	 * @param context
+	 * @return
+	 */
 	public static boolean checkNetworkStatus(Context context){
 		boolean resp = false;
 		final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -101,15 +113,15 @@ public class AppUtil {
 	}
 	
 	/**
-	 * 生成tag的名称
+	 * 生成app日志tag
 	 * @param cls
 	 * @return
 	 */
 	public static String makeLogTag(Class cls) {
 		String tag = null;
-		if (CONFIG.TAG_LEVEL == 0) {
+		if (SAFConfig.TAG_LEVEL == 0) {
 			tag = cls.getSimpleName();
-		} else if(CONFIG.TAG_LEVEL == 1){
+		} else if(SAFConfig.TAG_LEVEL == 1){
 			tag = cls.getCanonicalName();
 		}
 		return tag;

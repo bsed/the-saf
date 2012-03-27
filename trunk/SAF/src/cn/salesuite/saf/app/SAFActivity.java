@@ -11,11 +11,12 @@ import android.view.Gravity;
 import android.widget.Toast;
 import cn.salesuite.saf.location.LocationManager;
 import cn.salesuite.saf.location.activity.LocationActivity;
-import cn.salesuite.saf.utils.AppUtil;
+import cn.salesuite.saf.utils.SAFUtil;
 
 /**
- * SAF基类的Activity,任何使用该框架的app都可以继承该Activity<br>
- * 该类实现了自动定位的功能
+ * SAF框架基类的Activity,任何使用该框架的app都可以继承该Activity<br>
+ * 该类实现了定位的功能,当位置发生变化时子类可重写onLocationChanged()<br>
+ * 一般情况下无需处理mLocationManager的关闭,只有在主的Activity中退出才调用mLocationManager.destroy();
  * @author Tony Shen
  *
  */
@@ -33,7 +34,7 @@ public class SAFActivity extends LocationActivity{
 		}
 
 		app = (SAFApp) this.getApplication();
-		TAG = AppUtil.makeLogTag(this.getClass());
+		TAG = SAFUtil.makeLogTag(this.getClass());
 		addActivityToManager(this);
 	}
 	

@@ -15,19 +15,27 @@ import java.util.HashMap;
 import cn.salesuite.saf.exception.APIException;
 
 /**
- * 
+ * 使用HTTP Basic Access Authentication进行访问api
  * @author Tony Shen
  *
  */
 public class BaseAuthenicationHttpClient {
+	/**
+	 * 
+	 * @param urlString url
+	 * @param name 用户名
+	 * @param password 密码
+	 * @param params
+	 * @return
+	 * @throws APIException
+	 */
 	 public static String doRequest(String urlString, String name, String password, HashMap<String,String> params) throws APIException {
 		try{
 	    	URL url = new URL (urlString);
 	        String userPassword = name+":"+password;
 	
 	        String encoding = Base64.encode(userPassword).trim();
-	
-	
+
 	        HttpURLConnection uc = (HttpURLConnection) url.openConnection();
 	        uc.setRequestProperty("Authorization", "Basic " + encoding);
 	        uc.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -35,7 +43,6 @@ public class BaseAuthenicationHttpClient {
 	        uc.setDoInput(true);
 	        uc.setDoOutput(true);
 	        uc.setRequestMethod("POST");
-	        
 	        
 	        if (params != null && !params.isEmpty()) {
 	        	StringBuffer buf = new StringBuffer();
@@ -58,6 +65,14 @@ public class BaseAuthenicationHttpClient {
 
 	 }
 	 
+	 /**
+	  * 
+	  * @param urlString url
+	  * @param name 用户名
+	  * @param password 密码
+	  * @return
+	  * @throws APIException
+	  */
 	 public static String doRequest(String urlString, String name, String password) throws APIException {
 		 try{
 	        URL url = new URL (urlString);
