@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyStore;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.http.Header;
@@ -33,6 +34,9 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
+import cn.salesuite.saf.utils.StringHelper;
+
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -174,6 +178,50 @@ public class CommHttpClient {
 			httpRequest.abort();
 			throw e;
 		}
+	}
+	
+	/**
+	 * 把所有的非空传入参数，通过a-z排序后，使用key=value&key=value连接;<br>
+	 * 并对字符串进行md5加密
+	 * @param params
+	 * @return
+	 */
+	public static String encryptedParams(Map<String,String> params) {
+		StringBuilder sb = new StringBuilder();
+		String str = null;
+		
+		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> mRemoveList = new ArrayList<String>();
+
+		for (Map.Entry<String, String> item : params.entrySet()) {
+			if(item.getValue()==null){
+				mRemoveList.add(item.getKey());
+			}
+			list.add(item.getKey());
+		}
+		
+		int removeCount = mRemoveList.size();
+		for(int i=0;i<removeCount;i++){
+			params.remove(mRemoveList.get(i));
+			list.remove(mRemoveList.get(i));
+		} 
+		Collections.sort(list);
+		
+		for(int i=0;i<list.size();i++)
+		{
+			String key = list.get(i);
+			String value = "";
+			if(!TextUtils.isEmpty(key)){
+				value = params.get(key); 
+				sb.append(key).append("=").append(value).append("&"); 
+			} 
+		}
+		str = sb.toString();
+		if(!TextUtils.isEmpty(str)){
+			str = str.substring(0, str.length()-1);
+		}
+
+		return StringHelper.md5(str);
 	}
 	
 	private void executeResponseCallback(
