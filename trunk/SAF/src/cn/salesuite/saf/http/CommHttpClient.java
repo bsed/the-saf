@@ -6,6 +6,7 @@ package cn.salesuite.saf.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -181,12 +182,12 @@ public class CommHttpClient {
 	}
 	
 	/**
-	 * 把所有的非空传入参数，通过a-z排序后，使用key=value&key=value连接;<br>
-	 * 并对字符串进行md5加密
+	 * 把所有的非空传入参数，通过a-z排序后，
+	 * 使用key=value&key=value连接
 	 * @param params
 	 * @return
 	 */
-	public static String encryptedParams(Map<String,String> params) {
+	public static String sortParams(Map<String,String> params) {
 		StringBuilder sb = new StringBuilder();
 		String str = null;
 		
@@ -221,7 +222,21 @@ public class CommHttpClient {
 			str = str.substring(0, str.length()-1);
 		}
 
-		return StringHelper.md5(str);
+		return str;
+	}
+	
+	/**
+	 * 并对字符串进行md5加密
+	 * @param needMD5String
+	 * @return
+	 */
+	public static String getSign(String needMD5String) {
+		try {
+			needMD5String = URLEncoder.encode(needMD5String, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return StringHelper.md5(needMD5String);
 	}
 	
 	private void executeResponseCallback(
