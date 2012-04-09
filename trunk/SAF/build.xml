@@ -9,6 +9,7 @@
 	<property name="dest_dir" value="build" />
 	<property name="build_dir" value="${dest_dir}/classes" />
 	<property name="jar_name" value="${project_name}.jar" />
+	<property name="jar_util_name" value="${project_name}_util.jar" />
 	<property name="javadoc_dir" value="${dest_dir}/javadoc" />
 
 	<path id="build_classpath">
@@ -30,7 +31,10 @@
 	</target>
 
 	<target depends="build-project" name="build">
-		<jar jarfile="${dest_dir}/${jar_name}" basedir="${build_dir}" />
+		<!--<jar jarfile="${dest_dir}/${jar_name}" basedir="${build_dir}" />-->
+		<jar jarfile="${dest_dir}/${jar_util_name}" basedir="${build_dir}" includes="cn/salesuite/saf/utils/*.class" />
+	    <jar jarfile="${dest_dir}/${jar_name}" basedir="${build_dir}" includes="**/*.class"
+	         excludes="cn/salesuite/saf/utils/*.class" />
 	</target>
 
 	<target depends="init" name="build-project">

@@ -6,8 +6,6 @@ package cn.salesuite.saf.utils;
 import java.io.File;
 import java.util.List;
 
-import cn.salesuite.saf.config.SAFConfig;
-
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
