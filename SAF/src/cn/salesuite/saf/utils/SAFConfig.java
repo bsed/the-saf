@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.salesuite.saf.config;
+package cn.salesuite.saf.utils;
 
 /**
  * @author Tony Shen
