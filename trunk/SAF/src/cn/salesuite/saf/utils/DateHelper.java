@@ -355,4 +355,16 @@ public class DateHelper {
 		}
 		return timeContent;
 	}
+	
+	/**
+	 * 判断是否为闰年
+	 * @param year
+	 * @return
+	 */
+    public static boolean isLeapYear(int year) {
+        if(year % 100==0) {
+            return year % 400==0;
+        }
+        return year % 4==0;
+    }
 }

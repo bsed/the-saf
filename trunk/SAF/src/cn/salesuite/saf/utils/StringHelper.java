@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 public class StringHelper {
 
 	private final static int BUFFER_SIZE = 4096;
+    private static final char CHAR_CHINESE_SPACE = '\u3000';//中文（全角）空格
 	
 	/**
 	 * 判断字符串是否为手机号码</br>
@@ -113,5 +114,46 @@ public class StringHelper {
 		}
 		return sb.toString();
 	}
+	
+	/**
+	 * 从字符串s中截取某一段字符串
+	 * @param s
+	 * @param startToken 开始标记
+	 * @param endToken 结束标记
+	 * @return
+	 */
+    public static String mid(String s, String startToken, String endToken) {
+        return mid(s, startToken, endToken, 0);
+    }
 
+    public static String mid(String s, String startToken, String endToken, int fromStart) {
+        if (startToken==null || endToken==null)
+            return null;
+        int start = s.indexOf(startToken, fromStart);
+        if (start==(-1))
+            return null;
+        int end = s.indexOf(endToken, start + startToken.length());
+        if (end==(-1))
+            return null;
+        String sub = s.substring(start + startToken.length(), end);
+        return sub.trim();
+    }
+    
+    /**
+     * 简化字符串，通过删除空格键、tab键、换行键等实现
+     * @param s
+     * @return
+     */
+    public static String compact(String s) {
+        char[] cs = new char[s.length()];
+        int len = 0;
+        for(int n=0; n<cs.length; n++) {
+            char c = s.charAt(n);
+            if(c==' ' || c=='\t' || c=='\r' || c=='\n' || c==CHAR_CHINESE_SPACE)
+                continue;
+            cs[len] = c;
+            len++;
+        }
+        return new String(cs, 0, len);
+    }
 }
