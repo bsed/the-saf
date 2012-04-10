@@ -109,7 +109,7 @@ public class CommHttpClient {
 	}
 	
 	/**
-	 * 
+	 * 创建http/https请求
 	 * @param url
 	 * @param postdata
 	 * @param customizedHeader
@@ -195,7 +195,8 @@ public class CommHttpClient {
 		ArrayList<String> mRemoveList = new ArrayList<String>();
 
 		for (Map.Entry<String, String> item : params.entrySet()) {
-			if(item.getValue()==null){
+			if(item.getValue()==null || item.getValue().trim().length()==0
+					|| "null".equals(item.getValue())){
 				mRemoveList.add(item.getKey());
 			}
 			list.add(item.getKey());
