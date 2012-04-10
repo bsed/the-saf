@@ -35,6 +35,7 @@
 		<jar jarfile="${dest_dir}/${jar_util_name}" basedir="${build_dir}" includes="cn/salesuite/saf/utils/*.class" />
 	    <jar jarfile="${dest_dir}/${jar_name}" basedir="${build_dir}" includes="**/*.class"
 	         excludes="cn/salesuite/saf/utils/*.class" />
+		<jar jarfile="${dest_dir}/${jar_all_name}" basedir="${build_dir}" includes="**/*.class"/>
 	</target>
 	
 	<target depends="build-project" name="build_all">
