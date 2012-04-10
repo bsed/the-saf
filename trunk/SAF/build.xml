@@ -12,6 +12,8 @@
 	<property name="jar_all_name" value="${project_name}_all.jar" />
 	<property name="jar_util_name" value="${project_name}_utils.jar" />
 	<property name="javadoc_dir" value="${dest_dir}/javadoc" />
+	<property name="proguard" value="${basedir}/proguard"/>
+	<property name="proguard.lib" value="${proguard}/lib"/>
 
 	<path id="build_classpath">
 		<fileset dir="lib">
@@ -33,11 +35,11 @@
 
 	<target depends="build-project" name="build">
 		<jar jarfile="${dest_dir}/${jar_util_name}" basedir="${build_dir}" includes="cn/salesuite/saf/utils/*.class" />
-	    <jar jarfile="${dest_dir}/${jar_name}" basedir="${build_dir}" includes="**/*.class"
+		<jar jarfile="${dest_dir}/${jar_name}" basedir="${build_dir}" includes="**/*.class"
 	         excludes="cn/salesuite/saf/utils/*.class" />
 		<jar jarfile="${dest_dir}/${jar_all_name}" basedir="${build_dir}" includes="**/*.class"/>
 	</target>
-	
+
 	<target depends="build-project" name="build_all">
 		<jar jarfile="${dest_dir}/${jar_all_name}" basedir="${build_dir}" includes="**/*.class"/>
 	</target>
@@ -66,5 +68,70 @@
 			<classpath refid="build_classpath" />
 			<packageset dir="${src}" defaultexcludes="yes" />
 		</javadoc>
+	</target>
+
+	<target name="obfuscatejar" depends="build_all" description="使用proguard混淆jar">
+		<taskdef resource="proguard/ant/task.properties" classpath="${proguard.lib}/proguard.jar" />
+		<proguard printseeds="on" ignorewarnings="true" optimize="true">
+			<injar file="${dest_dir}/${jar_all_name}"/>
+			<outjar file="${dest_dir}/OB_${jar_all_name}"/>
+			<libraryjar file="${java.home}/lib/rt.jar">
+				<fileset dir="${basedir}">
+					<include name="lib/**/*.jar" />
+				</fileset>
+			</libraryjar>
+
+			<keepattribute name="LineNumberTable" />
+			<!-- 保留废弃的方法 -->
+			<keepattribute name="Deprecated" />
+			<!-- 保留所有的注解 -->
+			<keepattribute name="*Annotation*" />
+			<keepattribute name="Exceptions" />
+			<!-- 保留签名，解决泛型问题 -->
+			<keepattribute name="Signature" />
+
+			<!-- Preserve all public classes, and their public and protected fields
+						        and methods. -->
+
+			<keep access="public" >
+				<field access="public protected" />
+				<method access="public protected" />
+			</keep>
+
+			<!-- Preserve all .class method names. -->
+
+			<keepclassmembernames access="public">
+				<method type="java.lang.Class" name="class$" parameters="java.lang.String" />
+				<method type="java.lang.Class" name="class$" parameters="java.lang.String,boolean" />
+			</keepclassmembernames>
+
+			<!-- Preserve all native method names and the names of their classes. -->
+
+			<keepclasseswithmembernames>
+				<method access="native" />
+			</keepclasseswithmembernames>
+
+			<!-- Preserve the methods that are required in all enumeration classes. -->
+
+			<keepclassmembers extends="java.lang.Enum">
+				<method access="public static" type="**[]" name="values" parameters="" />
+				<method access="public static" type="**" name="valueOf" parameters="java.lang.String" />
+			</keepclassmembers>
+
+			<!-- Explicitly preserve all serialization members. The Serializable
+						         interface is only a marker interface, so it wouldn't save them.
+						         You can comment this out if your library doesn't use serialization.
+						         If your code contains serializable classes that have to be backward
+						         compatible, please refer to the manual. -->
+
+			<keepclassmembers implements="java.io.Serializable">
+				<field access="final" type="long" name="serialVersionUID" />
+				<field access="static final" type="java.io.ObjectStreamField[]" name="serialPersistentFields" />
+				<method access="private" type="void" name="writeObject" parameters="java.io.ObjectOutputStream" />
+				<method access="private" type="void" name="readObject" parameters="java.io.ObjectInputStream" />
+				<method type="java.lang.Object" name="writeReplace" parameters="" />
+				<method type="java.lang.Object" name="readResolve" parameters="" />
+			</keepclassmembers>
+		</proguard>
 	</target>
 </project>
