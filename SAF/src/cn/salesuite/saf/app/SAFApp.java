@@ -6,14 +6,10 @@ package cn.salesuite.saf.app;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
-
-import cn.salesuite.saf.config.SAFConstant;
 
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -23,6 +19,7 @@ import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import cn.salesuite.saf.config.SAFConstant;
 
 /**
  * SAFApp是自定义的Application,session可作为缓存存放app的全局变量<br>
@@ -72,6 +69,11 @@ public class SAFApp extends Application{
 		}
 	}
 	
+	/**
+	 * 获取手机的设备号或者wifi的mac号，在wifi环境下只返回mac地址，否则返回手机设备号<br>
+	 * 在模拟器情况下会返回null
+	 * @return
+	 */
 	private String getDeviceId() {
 		WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInfo = manager.getConnectionInfo();
@@ -95,19 +97,21 @@ public class SAFApp extends Application{
 						&& !SAFConstant.SPECIAL_ANDROID_ID.equals(deviceId)) {
 					Log.d("requestCount", "ANDROID_ID:" + deviceId);
 					return deviceId;
-				} else {
-					SharedPreferences sp = this.getSharedPreferences(
-							SAFConstant.SHARED, Activity.MODE_PRIVATE);
-					String uid = sp.getString("uid", null);
-					if (uid == null) {
-						SharedPreferences.Editor editor = sp.edit();
-						uid=UUID.randomUUID().toString().replace("-", "");
-						editor.putString("uid",uid );
-						editor.commit();
-					}
-					Log.d("requestCount", "uid:" + uid);
-					return uid;
-				}
+				} 
+//				else {
+//					SharedPreferences sp = this.getSharedPreferences(
+//							SAFConstant.SHARED, Activity.MODE_PRIVATE);
+//					String uid = sp.getString("uid", null);
+//					if (uid == null) {
+//						SharedPreferences.Editor editor = sp.edit();
+//						uid=UUID.randomUUID().toString().replace("-", "");
+//						editor.putString("uid",uid );
+//						editor.commit();
+//					}
+//					Log.d("requestCount", "uid:" + uid);
+//					return uid;
+//				}
+				return null;
 			}
 		}
 	}
