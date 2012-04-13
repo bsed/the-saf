@@ -22,7 +22,9 @@ import cn.salesuite.saf.utils.SAFUtil;
 /**
  * SAF框架基类的Activity,任何使用该框架的app都可以继承该Activity<br>
  * 该类实现了定位的功能,当位置发生变化时子类可重写onLocationChanged()<br>
- * 一般情况下无需处理mLocationManager的关闭,只有在主的Activity中退出才调用mLocationManager.destroy();
+ * 一般情况下无需处理mLocationManager的关闭,只有在主的Activity中退出才调用mLocationManager.destroy();<br>
+ * 增加读取手机信号强度和手机卡类型的方法，需添加权限<br>
+ * &ltuses-permission android:name="android.permission.READ_PHONE_STATE" />
  * @author Tony Shen
  *
  */
@@ -30,11 +32,16 @@ public class SAFActivity extends LocationActivity{
 
 	public static SAFApp app;
 	public String TAG;
+	public int networkType;
 	
 	private Handler mdBmHandler = new Handler(Looper.getMainLooper());
 	private Runnable mGetdBmRunnable = new Runnable() {
 		public void run() {
-			getSignalStrength();
+			CellIDInfoManager manager = new CellIDInfoManager();
+			getSignalStrength(manager);
+			if (networkType == 0) {
+				networkType = getNetworkType(manager);
+			}
 		}
 	};
 	
@@ -93,6 +100,9 @@ public class SAFActivity extends LocationActivity{
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if (app.deviceid!=null) {
+			mdBmHandler.removeCallbacks(mGetdBmRunnable);
+		}
 		mLocationManager.unregister(this);
 		delActivityFromManager(this);
 	}
@@ -134,10 +144,9 @@ public class SAFActivity extends LocationActivity{
 		}
 	}
 	
-	private void getSignalStrength() {
-		int dbm = 0;
+	private void getSignalStrength(CellIDInfoManager manager) {
+		int dbm = -112;
 		
-		CellIDInfoManager manager = new CellIDInfoManager();
 		ArrayList<CellIDInfo> CellID = null;
 		try {
 			CellID = manager.getCellIDInfo(this);
@@ -151,5 +160,14 @@ public class SAFActivity extends LocationActivity{
 		if (dbm <= -112) {
 			showToast("当前信号差");
 		}
+	}
+	
+	/**
+	 * 获取手机网络类型,该方法在调用getSignalStrength（）之后使用
+	 * @param manager
+	 * @return
+	 */
+	private int getNetworkType(CellIDInfoManager manager) {
+		return manager.getNetworkType();
 	}
 }
