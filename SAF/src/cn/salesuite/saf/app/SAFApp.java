@@ -25,7 +25,7 @@ import cn.salesuite.saf.config.SAFConstant;
  * SAFApp是自定义的Application,session可作为缓存存放app的全局变量<br>
  * SAFApp并不是每个app都需要使用,可自由选择<br>
  * 如需使用,则在AndroidManifest.xml中配置,<br>
- * 在application中增加android:name="cn.salesuite.saf.SAFApp"
+ * 在application中增加android:name="cn.salesuite.saf.app.SAFApp"
  * @author Tony Shen
  *
  */
@@ -40,6 +40,7 @@ public class SAFApp extends Application{
 	public String osVersion; //系统版本
 	public String mobileType;//手机型号
 	public String version;   //应用的versionName
+	public String citycode;  //城市代码
 	
 	/**
 	 * @see android.app.Application#onCreate()
@@ -70,7 +71,7 @@ public class SAFApp extends Application{
 	}
 	
 	/**
-	 * 获取手机的设备号或者wifi的mac号，在wifi环境下只返回mac地址，否则返回手机设备号<br>
+	 * 获取手机的设备号或�?wifi的mac号，在wifi环境下只返回mac地址，否则返回手机设备号<br>
 	 * 在模拟器情况下会返回null
 	 * @return
 	 */
