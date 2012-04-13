@@ -5,8 +5,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.telephony.NeighboringCellInfo;
-import android.telephony.PhoneStateListener;
-import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
@@ -18,6 +16,7 @@ public class CellIDInfoManager {
 	private GsmCellLocation gsm;
 	private CdmaCellLocation cdma;
 	int lac;
+	private int networkType;
 	String current_ci,mcc, mnc;
 	private ArrayList<CellIDInfo> CellID;
 	
@@ -31,7 +30,8 @@ public class CellIDInfoManager {
 		CellID = new ArrayList<CellIDInfo>();
 		CellIDInfo currentCell = new CellIDInfo();
 		int type = manager.getPhoneType();
-
+		networkType = manager.getNetworkType();
+		
 		if (type == TelephonyManager.PHONE_TYPE_GSM) {
 			gsm = ((GsmCellLocation) manager.getCellLocation());
 		    if (gsm == null) return null;
@@ -127,5 +127,9 @@ public class CellIDInfoManager {
 			dBm = -113 + 2 * asu;
 		}
 		return dBm;
+	}
+	
+	public int getNetworkType() {
+		return networkType;
 	}
 }
