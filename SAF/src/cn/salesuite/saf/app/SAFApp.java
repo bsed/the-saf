@@ -71,7 +71,7 @@ public class SAFApp extends Application{
 	}
 	
 	/**
-	 * 获取手机的设备号或�?wifi的mac号，在wifi环境下只返回mac地址，否则返回手机设备号<br>
+	 * 获取手机的设备号或者wifi的mac号，在wifi环境下只返回mac地址，否则返回手机设备号<br>
 	 * 在模拟器情况下会返回null
 	 * @return
 	 */
