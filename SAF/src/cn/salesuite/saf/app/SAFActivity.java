@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
+import cn.salesuite.saf.config.SAFConstant;
 import cn.salesuite.saf.location.CellIDInfo;
 import cn.salesuite.saf.location.CellIDInfoManager;
 import cn.salesuite.saf.location.LocationManager;
@@ -23,8 +24,8 @@ import cn.salesuite.saf.utils.SAFUtil;
  * SAF框架基类的Activity,任何使用该框架的app都可以继承该Activity<br>
  * 该类实现了定位的功能,当位置发生变化时子类可重写onLocationChanged()<br>
  * 一般情况下无需处理mLocationManager的关闭,只有在主的Activity中退出才调用mLocationManager.destroy();<br>
- * 增加读取手机信号强度和手机卡类型的方法，需添加权限<br>
- * &ltuses-permission android:name="android.permission.READ_PHONE_STATE" />
+ * 增加checkMobileStatus()方法，该方法可读取手机信号强度和手机卡类型，使用该方法需将SAFConstant.CHECK_MOBILE_STATUS设置成true<br>
+ * 该方法需添加权限&ltuses-permission android:name="android.permission.READ_PHONE_STATE" />
  * @author Tony Shen
  *
  */
@@ -49,7 +50,9 @@ public class SAFActivity extends LocationActivity{
 		super.onCreate(savedInstanceState);
 		
 		app = (SAFApp) this.getApplication();
-		checkSignalStrength();
+		if(SAFConstant.CHECK_MOBILE_STATUS) {
+			checkMobileStatus();
+		}
 		
 		if (mLocationManager == null) {
 			mLocationManager = LocationManager.getInstance();
@@ -100,7 +103,7 @@ public class SAFActivity extends LocationActivity{
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (app.deviceid!=null) {
+		if (SAFConstant.CHECK_MOBILE_STATUS && app.deviceid!=null) {
 			mdBmHandler.removeCallbacks(mGetdBmRunnable);
 		}
 		mLocationManager.unregister(this);
@@ -136,9 +139,9 @@ public class SAFActivity extends LocationActivity{
 	}
 	
 	/**
-	 * 检测手机信号,当手机信号弱时,利用toast提示用户
+	 * 检测手机状态,当手机信号弱时,利用toast提示用户
 	 */
-	protected void checkSignalStrength() {
+	protected void checkMobileStatus() {
 		if (app.deviceid!=null) {
 			mdBmHandler.post(mGetdBmRunnable);
 		}
@@ -163,7 +166,7 @@ public class SAFActivity extends LocationActivity{
 	}
 	
 	/**
-	 * 获取手机网络类型,该方法在调用getSignalStrength（）之后使用
+	 * 获取手机网络类型,该方法在调用getSignalStrength()之后使用
 	 * @param manager
 	 * @return
 	 */
