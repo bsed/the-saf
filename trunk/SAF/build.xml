@@ -10,7 +10,7 @@
 	<property name="src" value="src" />
 	<property name="dest_dir" value="build" />
 	<property name="build_dir" value="${dest_dir}/classes" />
-	<property name="jar_name" value="${project_name}.jar" />
+	<property name="jar_core_name" value="${project_name}_core.jar" />
 	<property name="jar_all_name" value="${project_name}_all.jar" />
 	<property name="jar_util_name" value="${project_name}_utils.jar" />
 	<property name="javadoc_dir" value="${dest_dir}/javadoc" />
@@ -37,7 +37,7 @@
 
 	<target depends="build-project" name="build">
 		<jar jarfile="${dest_dir}/${jar_util_name}" basedir="${build_dir}" includes="cn/salesuite/saf/utils/*.class" />
-		<jar jarfile="${dest_dir}/${jar_name}" basedir="${build_dir}" includes="**/*.class"
+		<jar jarfile="${dest_dir}/${jar_core_name}" basedir="${build_dir}" includes="**/*.class"
 	         excludes="cn/salesuite/saf/utils/*.class" />
 		<jar jarfile="${dest_dir}/${jar_all_name}" basedir="${build_dir}" includes="**/*.class"/>
 	</target>
