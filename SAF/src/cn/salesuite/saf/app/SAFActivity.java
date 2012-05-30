@@ -87,6 +87,18 @@ public class SAFActivity extends LocationActivity{
         }
 	}
 	
+	/**
+	 * 返回当前运行activity的名称
+	 * @return
+	 */
+	protected String getCurrentActivityName() {
+		int size = app.activityManager.size();
+		if (size > 0) {
+			return app.activityManager.get(size-1).getClass().getName();
+		}
+		return null;
+	}
+	
 	@Override
 	public void onLocationChanged(Location location) {
 
