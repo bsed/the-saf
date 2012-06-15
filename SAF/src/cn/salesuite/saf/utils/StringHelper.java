@@ -6,6 +6,7 @@ package cn.salesuite.saf.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -156,4 +157,12 @@ public class StringHelper {
         }
         return new String(cs, 0, len);
     }
+    
+    /**
+     * 生成uuid
+     * @return
+     */
+	public static String getUUID() {
+		return UUID.randomUUID().toString().replace("-", "").toLowerCase();
+	}
 }
