@@ -165,4 +165,13 @@ public class StringHelper {
 	public static String getUUID() {
 		return UUID.randomUUID().toString().replace("-", "").toLowerCase();
 	}
+	
+	/**
+	 * 判断字符串是否为空
+	 * @param str
+	 * @return
+	 */
+	public static boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
+	}
 }
