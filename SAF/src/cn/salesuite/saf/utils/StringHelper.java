@@ -174,4 +174,15 @@ public class StringHelper {
 	public static boolean isEmpty(String str) {
         return str == null || str.length() == 0;
 	}
+	
+	/**
+	 * 如果str字符串为null,返回为"";如果字符串不为空,返回原来的字符串
+	 * @param str
+	 * @return
+	 */
+	public static String nullToBlank(String str) {
+		if (str == null) 
+			return "";
+		return str;
+	}
 }
