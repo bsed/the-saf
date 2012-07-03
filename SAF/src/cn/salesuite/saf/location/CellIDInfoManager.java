@@ -132,4 +132,8 @@ public class CellIDInfoManager {
 	public int getNetworkType() {
 		return networkType;
 	}
+	
+	public String getMnc() {
+		return mnc;
+	}
 }
