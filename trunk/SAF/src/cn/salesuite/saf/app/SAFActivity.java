@@ -34,15 +34,22 @@ public class SAFActivity extends LocationActivity{
 	public static SAFApp app;
 	public String TAG;
 	public int networkType;
+	public String networkName;
 	
 	private Handler mdBmHandler = new Handler(Looper.getMainLooper());
 	private Runnable mGetdBmRunnable = new Runnable() {
 		public void run() {
 			CellIDInfoManager manager = new CellIDInfoManager();
 			getSignalStrength(manager);
+			if (SAFUtil.isWiFiActive(app)) {
+				networkName = "wifi";
+				return;
+			}
 			if (networkType == 0) {
 				networkType = getNetworkType(manager);
 			}
+			networkName = SAFUtil.getNetWorkName(networkType,manager.getMnc());
+			app.session.put(SAFConstant.DEVICE_NET_INFO, networkName);
 		}
 	};
 	

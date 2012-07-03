@@ -15,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.telephony.TelephonyManager;
 
 /**
  * SAF的工具类
@@ -79,6 +80,31 @@ public class SAFUtil {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * 获取手机网络类型名称
+	 * @param networkType
+	 * @param mnc Mobile NetworkCode，移动网络码，共2位
+	 * @return
+	 */
+	public static String getNetWorkName(int networkType,String mnc) {
+		if (networkType == TelephonyManager.NETWORK_TYPE_UNKNOWN) {
+			return "Network type is unknown";
+		} else if (networkType == TelephonyManager.NETWORK_TYPE_CDMA) {
+			return "电信2G";
+		} else if (networkType == TelephonyManager.NETWORK_TYPE_EVDO_0) {
+			return "电信3G";
+		} else if (networkType == TelephonyManager.NETWORK_TYPE_GPRS || networkType == TelephonyManager.NETWORK_TYPE_EDGE) {
+			if ("00".equals(mnc) || "02".equals(mnc)) {
+				return "移动2G";
+			} else if ("01".equals(mnc)) {
+				return "联通2G";
+			}
+		} else if (networkType == TelephonyManager.NETWORK_TYPE_UMTS || networkType == TelephonyManager.NETWORK_TYPE_HSDPA) {
+			return "联通3G";
+		}
+		return null;
 	}
 	
 	/**
