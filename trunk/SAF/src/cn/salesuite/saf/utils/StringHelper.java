@@ -275,5 +275,14 @@ public class StringHelper {
   
         String[] result = {};  
         return list.toArray(result);  
-    }  
+    }
+    
+    /**
+     * 字符串反转
+     * @param str
+     * @return
+     */
+    public static String reverse(String str){
+    	return new StringBuffer(str).reverse().toString();  
+    }
 }
