@@ -283,4 +283,19 @@ public class StringHelper {
     public static String reverse(String str){
     	return new StringBuffer(str).reverse().toString();  
     }
+    
+
+    /**
+     * html的转义字符转换成正常的字符串
+     * 
+     * @param html
+     * @return
+     */
+    public static String htmlEscapeCharsToString(String html) {
+        if (isEmpty(html)) {
+            return html;
+        } else {
+            return html.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&amp;", "&").replaceAll("&quot;","\"");
+        }
+    }
 }
