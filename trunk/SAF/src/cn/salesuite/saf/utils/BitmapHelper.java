@@ -7,13 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 /**
  * @author Tony Shen
@@ -21,24 +18,65 @@ import android.util.Log;
  */
 public class BitmapHelper {
 	
-	/**
-	 * 将网络图片的地址转换成Drawable对象
-	 * @param imageUrl
-	 * @return
-	 */
-	public static Drawable ImageUrl2Drawable(String imageUrl) {
-		try {
-			URL aryURI = new URL(imageUrl);
-			URLConnection conn = aryURI.openConnection();
-			InputStream is = conn.getInputStream();
-			Bitmap bm = BitmapFactory.decodeStream(is);
-			return new BitmapDrawable(bm);
-		} catch (MalformedURLException e) {
-			Log.e("ERROR", "ImageUrl2Drawable方法发生MalformedURLException异常，imageUrl：" + imageUrl, e);
-			return null;
-		} catch (IOException e) {
-			Log.e("ERROR", "ImageUrl2Drawable方法发生IOException异常，imageUrl：" + imageUrl, e);
-			return null;
-		}
-	}
+    /**
+     * 将网络图片的地址转换成Drawable对象
+     * 
+     * @param imageUrl 图片url
+     * @return
+     */
+    public static Drawable getDrawableFromUrl(String imageUrl) {
+        InputStream stream = getInputStreamFromUrl(imageUrl);
+        Drawable d = Drawable.createFromStream(stream, "src");
+        closeInputStream(stream);
+        return d;
+    }
+    
+    /**
+     * 将网络图片的地址转换成Bitmap对象
+     * 
+     * @param imageUrl 图片url
+     * @return
+     */
+    public static Bitmap getBitmapFromUrl(String imageUrl) {
+        InputStream stream = getInputStreamFromUrl(imageUrl);
+        Bitmap b = BitmapFactory.decodeStream(stream);
+        closeInputStream(stream);
+        return b;
+    }
+    
+    /**
+     * 根据imageUrl获得InputStream，需要自己手动关闭InputStream
+     * 
+     * @param imageUrl 图片url
+     * @return
+     */
+    private static InputStream getInputStreamFromUrl(String imageUrl) {
+        InputStream stream = null;
+        try {
+            URL url = new URL(imageUrl);
+            stream = (InputStream)url.getContent();
+        } catch (MalformedURLException e) {
+            closeInputStream(stream);
+            throw new RuntimeException("MalformedURLException occurred. ", e);
+        } catch (IOException e) {
+            closeInputStream(stream);
+            throw new RuntimeException("IOException occurred. ", e);
+        }
+        return stream;
+    }
+    
+    /**
+     * 关闭InputStream
+     * 
+     * @param s
+     */
+    private static void closeInputStream(InputStream s) {
+        if (s != null) {
+            try {
+                s.close();
+            } catch (IOException e) {
+                throw new RuntimeException("IOException occurred. ", e);
+            }
+        }
+    }
 }
