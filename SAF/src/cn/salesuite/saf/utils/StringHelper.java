@@ -187,9 +187,7 @@ public class StringHelper {
 	 * @return
 	 */
 	public static String nullToBlank(String str) {
-		if (str == null) 
-			return "";
-		return str;
+		return (str == null ? "" : str);
 	}
 	
 	/**
@@ -205,7 +203,7 @@ public class StringHelper {
         }  
         for (String str : arr2) {  
             set.add(str);  
-        }  
+        }
         String[] result = {};  
         return set.toArray(result);  
     }
