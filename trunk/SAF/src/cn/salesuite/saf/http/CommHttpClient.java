@@ -10,7 +10,9 @@ import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -127,14 +129,28 @@ public class CommHttpClient {
 					item.getValue()).append("&");
 		}
 		Log.d("URL", sb.toString());
+		 
+		if(customizedHeader==null){
+			customizedHeader = new HashMap<String, String>();
+		}
+		customizedHeader.put("Accept-Encoding", "gzip");
+		
 
 		HttpPost httpRequest = createHttpPost(url, postdata, customizedHeader);
 		HttpResponse httpResponse = executeHttpRequest(httpRequest);
 		HttpEntity httpEntity = httpResponse.getEntity();
+		Header contentEncoding = httpResponse.getFirstHeader("Content-Encoding");
+		
 		//success
 		if (httpResponse.getStatusLine().getStatusCode() == 200) {
 			//String response = EntityUtils.toString(httpEntity);
-			executeResponseCallback(callback, httpEntity.getContent());
+			InputStream instream = httpEntity.getContent();
+			if (contentEncoding!=null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
+				instream = new GZIPInputStream(instream);
+				executeResponseCallback(callback, instream);
+			} else {
+				executeResponseCallback(callback, instream);
+			}
 		} else {
 			Log.e("error", "Request failure! url:"+url);
 			
