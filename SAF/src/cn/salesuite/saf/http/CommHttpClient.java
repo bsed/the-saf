@@ -134,15 +134,15 @@ public class CommHttpClient {
 			customizedHeader = new HashMap<String, String>();
 		}
 		customizedHeader.put("Accept-Encoding", "gzip");
+		customizedHeader.put("Connection" , "Keep-Alive");
 		
-
 		HttpPost httpRequest = createHttpPost(url, postdata, customizedHeader);
 		HttpResponse httpResponse = executeHttpRequest(httpRequest);
 		HttpEntity httpEntity = httpResponse.getEntity();
-		Header contentEncoding = httpResponse.getFirstHeader("Content-Encoding");
 		
 		//success
 		if (httpResponse.getStatusLine().getStatusCode() == 200) {
+			Header contentEncoding = httpResponse.getFirstHeader("Content-Encoding");
 			//String response = EntityUtils.toString(httpEntity);
 			InputStream instream = httpEntity.getContent();
 			if (contentEncoding!=null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
