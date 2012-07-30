@@ -4,10 +4,12 @@
 package cn.salesuite.saf.utils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -76,6 +78,26 @@ public class SAFUtil {
 			// processName:
 			// The name of the process that this object is associated with.
 			if (appProcess.processName.equals(packageName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 判断服务是否运行
+	 * @param mContext
+	 * @param serviceName
+	 * @return true为运行，false为不在运行
+	 */
+	public boolean isServiceRunning(Context mContext, String serviceName) {
+		ActivityManager myManager = (ActivityManager) mContext
+				.getSystemService(Context.ACTIVITY_SERVICE);
+		ArrayList<RunningServiceInfo> runningService = (ArrayList<RunningServiceInfo>) myManager
+				.getRunningServices(30);
+		for (int i = 0; i < runningService.size(); i++) {
+			String serName = runningService.get(i).service.getClassName().toString();
+			if (serName.equals(serviceName)) {
 				return true;
 			}
 		}
