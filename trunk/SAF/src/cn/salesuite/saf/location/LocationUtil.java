@@ -16,6 +16,7 @@ import com.decarta.shifting.ShiftTool;
 import cn.salesuite.saf.exception.APIException;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
@@ -155,6 +156,20 @@ public class LocationUtil {
 	public static boolean positionInChina(Position pos){
 		if(pos.getLat()>18.167 && pos.getLat()<53.55){
 			if(pos.getLon()>73.667 && pos.getLon()<135.033){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 判断经纬度是否在中国
+	 * @param mLocation
+	 * @return
+	 */
+	public static boolean positionInChina(Location mLocation){
+		if(mLocation.getLatitude()>18.167 && mLocation.getLatitude()<53.55){
+			if(mLocation.getLongitude()>73.667 && mLocation.getLongitude()<135.033){
 				return true;
 			}
 		}
