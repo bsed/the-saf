@@ -43,6 +43,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
+ * 使用CommHttpClient时，可以访问http/https类型的url,支持http gzip压缩的方式传输<br>
+ * 如果需要访问https的url需要使用CommHttpClient httpClient = new CommHttpClient(true);
  * @author Tony Shen
  *
  */
