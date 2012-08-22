@@ -180,4 +180,18 @@ public class SAFUtil {
 	  final float scale = context.getResources().getDisplayMetrics().density;
 	  return (int) (dpValue * scale + 0.5f);
 	}
+	
+    /**
+     * 判断谷歌地图是否可用,某些国行的手机不支持谷歌地图的服务
+     * @return
+     */
+	public static boolean googleMapAvailable() {
+		boolean available = false;
+		try{
+			Class.forName("com.google.android.maps.MapActivity");
+			available = true;
+		} catch (Exception e)  {
+		}
+		return available;
+	}
 }
