@@ -4,6 +4,8 @@
 package cn.salesuite.saf.utils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -193,5 +195,23 @@ public class SAFUtil {
 		} catch (Exception e)  {
 		}
 		return available;
+	}
+	
+	/**
+	 * 从Assets中读取文件
+	 * @param context
+	 * @param fileName
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public static InputStream getFromAssets(Context context,String fileName)
+			throws FileNotFoundException {
+		InputStream inputStream = null;
+		try {
+			inputStream = context.getResources().getAssets().open(fileName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return inputStream;
 	}
 }
