@@ -31,12 +31,13 @@ import cn.salesuite.saf.utils.IOUtil;
  * 
  */
 public class ImageLoader {
-	MemoryCache memoryCache = new MemoryCache();
+	MemoryCache memoryCache;
     FileCache fileCache;
     private Map<ImageView, String> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService; 
     
     public ImageLoader(Context context){
+    	memoryCache = new MemoryCache();
         fileCache=new FileCache(context);
         executorService=Executors.newFixedThreadPool(5);
     }
@@ -178,4 +179,8 @@ public class ImageLoader {
         memoryCache.clear();
         fileCache.clear();
     }
+
+	public MemoryCache getMemoryCache() {
+		return memoryCache;
+	}
 }
