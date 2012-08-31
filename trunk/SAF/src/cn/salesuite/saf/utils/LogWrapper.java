@@ -5,6 +5,8 @@ package cn.salesuite.saf.utils;
 
 import java.util.LinkedList;
 
+import cn.salesuite.saf.config.SAFConfig;
+
 import android.util.Log;
 
 /**
