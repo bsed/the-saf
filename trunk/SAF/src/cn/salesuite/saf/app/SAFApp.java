@@ -38,11 +38,11 @@ public class SAFApp extends Application {
 
 	public List<Activity> activityManager;
 
-	public String deviceid; // 设备ID
+	public String deviceid;  // 设备ID
 	public String osVersion; // 系统版本
 	public String mobileType;// 手机型号
-	public String version; // 应用的versionName
-	public String citycode; // 城市代码
+	public String version;   // 应用的versionName
+	public String citycode;  // 城市代码
 
 	public ImageLoader imageLoader;
 	private static SAFApp instance;
