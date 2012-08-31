@@ -7,8 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.http.ParseException;
-
 /**
  * @author Tony Shen
  *
@@ -202,7 +200,6 @@ public class DateHelper {
 	 * parse date using default pattern yyyy-MM-dd
 	 * @param strDate
 	 * @return
-	 * @throws ParseException
 	 */
 	public static final Date parseDate(String strDate){
 		Date date = null;
@@ -219,7 +216,6 @@ public class DateHelper {
 	 * @param strDate
 	 * @param pattern
 	 * @return
-	 * @throws ParseException
 	 */
 	public static final Date parseDate(String strDate, String pattern){
 		SimpleDateFormat df = null;
