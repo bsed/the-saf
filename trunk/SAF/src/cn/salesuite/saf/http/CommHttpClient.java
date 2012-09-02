@@ -6,6 +6,8 @@ package cn.salesuite.saf.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -52,7 +55,7 @@ public class CommHttpClient {
 
 	private static final String TAG = "CommHttpClient";
 	public static final int ONE_MINUTE = 60000;
-	private DefaultHttpClient httpClient;
+	private HttpClient httpClient;
 	
 	public CommHttpClient() {
 		httpClient = createHttpClient();
@@ -61,7 +64,7 @@ public class CommHttpClient {
 	/**
 	 * 当httpsFlag为true时,创建httpsCilent<br>
 	 * 当httpsFlag为false时,创建httpCilent
-	 * @param useHttpsFlag
+	 * @param httpsFlag
 	 */
 	public CommHttpClient(boolean httpsFlag) {
 		if (httpsFlag) {
@@ -70,9 +73,58 @@ public class CommHttpClient {
 			httpClient = createHttpClient();
 		}
 	}
+	
+	/**
+	 * Gets an instance of AndroidHttpClient if the devices has it (it was
+	 * introduced in 2.2), or falls back on a http client that should work
+	 * reasonably well.
+	 *
+	 * @return a working instance of an HttpClient
+	 */
+	private HttpClient createHttpClient() {
+		HttpClient hc;
+		try {
+			final Class<?> ahcClass = Class
+					.forName("android.net.http.AndroidHttpClient");
+			final Method newInstance = ahcClass.getMethod("newInstance",
+					String.class);
+			hc = (HttpClient) newInstance.invoke(null, TAG);
 
-	private static DefaultHttpClient createHttpClient() {
-		return new DefaultHttpClient(createHttpParams());
+		} catch (final ClassNotFoundException e) {
+			DefaultHttpClient dhc = new DefaultHttpClient(createHttpParams());
+			final HttpParams params = dhc.getParams();
+			dhc = null;
+
+			final SchemeRegistry registry = new SchemeRegistry();
+			registry.register(new Scheme("http", PlainSocketFactory
+					.getSocketFactory(), 80));
+			registry.register(new Scheme("https", SSLSocketFactory
+					.getSocketFactory(), 443));
+
+			final ThreadSafeClientConnManager manager = new ThreadSafeClientConnManager(
+					params, registry);
+			hc = new DefaultHttpClient(manager, params);
+
+		} catch (final NoSuchMethodException e) {
+
+			final RuntimeException re = new RuntimeException(
+					"Programming error");
+			re.initCause(e);
+			throw re;
+
+		} catch (final IllegalAccessException e) {
+			final RuntimeException re = new RuntimeException(
+					"Programming error");
+			re.initCause(e);
+			throw re;
+
+		} catch (final InvocationTargetException e) {
+			final RuntimeException re = new RuntimeException(
+					"Programming error");
+			re.initCause(e);
+			throw re;
+		}
+		return hc;
 	}
 	
 	private static HttpParams createHttpParams() {
