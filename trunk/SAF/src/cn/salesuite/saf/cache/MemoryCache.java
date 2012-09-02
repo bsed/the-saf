@@ -35,11 +35,7 @@ public class MemoryCache {
 	}
 	
 	public boolean containsKey(String url) {
-		if (cache.containsKey(url)) {
-			return true;
-		} else {
-			return false;
-		}
+		return cache.containsKey(url)?true:false;
 	}
 
 	public Bitmap get(String id) {

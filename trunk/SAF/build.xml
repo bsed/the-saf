@@ -2,6 +2,7 @@
 <project basedir="." default="build" name="SAF">
 	<description>SAF Project v1.0</description>
 	
+	<tstamp/>
 	<property environment="env" />
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="project_name" value="SAF"/>
@@ -10,9 +11,9 @@
 	<property name="src" value="src" />
 	<property name="dest_dir" value="build" />
 	<property name="build_dir" value="${dest_dir}/classes" />
-	<property name="jar_core_name" value="${project_name}_core.jar" />
-	<property name="jar_all_name" value="${project_name}_all.jar" />
-	<property name="jar_util_name" value="${project_name}_utils.jar" />
+	<property name="jar_core_name" value="${project_name}_core_${DSTAMP}.jar" />
+	<property name="jar_all_name" value="${project_name}_all_${DSTAMP}.jar" />
+	<property name="jar_util_name" value="${project_name}_utils_${DSTAMP}.jar" />
 	<property name="javadoc_dir" value="${dest_dir}/javadoc" />
 	<property name="proguard" value="${basedir}/proguard"/>
 	<property name="proguard.lib" value="${proguard}/lib"/>
@@ -24,8 +25,8 @@
 	</path>
 
 	<target name="init">
-		<antcall target="clean">
-		</antcall>
+		<echo message="start to complie the saf!" />
+		<antcall target="clean" />
 		<mkdir dir="${dest_dir}" />
 		<mkdir dir="${build_dir}" />
 		<mkdir dir="${javadoc_dir}" />
@@ -42,7 +43,7 @@
 		<jar jarfile="${dest_dir}/${jar_all_name}" basedir="${build_dir}" includes="**/*.class"/>
 	</target>
 
-	<target depends="build-project" name="build_all">
+	<target depends="build-project" name="build_all" description="只编译SAF_all.jar">
 		<jar jarfile="${dest_dir}/${jar_all_name}" basedir="${build_dir}" includes="**/*.class"/>
 	</target>
 
