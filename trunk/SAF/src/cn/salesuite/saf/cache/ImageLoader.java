@@ -22,7 +22,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
-import cn.salesuite.saf.config.SAFConfig;
 import cn.salesuite.saf.utils.IOUtil;
 
 /**
@@ -31,18 +30,19 @@ import cn.salesuite.saf.utils.IOUtil;
  * 
  */
 public class ImageLoader {
+	
 	MemoryCache memoryCache;
     FileCache fileCache;
     private Map<ImageView, String> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
-    ExecutorService executorService; 
+    ExecutorService executorService;
+    int stub_id;
     
-    public ImageLoader(Context context){
+    public ImageLoader(Context context,int default_img_id){
     	memoryCache = new MemoryCache();
         fileCache=new FileCache(context);
         executorService=Executors.newFixedThreadPool(5);
+        stub_id = default_img_id;
     }
-    
-    final int stub_id = SAFConfig.default_img_id;
     
     public void displayImage(String url, ImageView imageView) {
         imageViews.put(imageView, url);
@@ -56,14 +56,12 @@ public class ImageLoader {
         }
     }
         
-    private void queuePhoto(String url, ImageView imageView)
-    {
+    private void queuePhoto(String url, ImageView imageView) {
         PhotoToLoad p=new PhotoToLoad(url, imageView);
         executorService.submit(new PhotosLoader(p));
     }
     
-    public Bitmap getBitmap(String url) 
-    {
+    public Bitmap getBitmap(String url) {
         File f=fileCache.getFile(url);
         
         //from SD cache
@@ -121,8 +119,7 @@ public class ImageLoader {
     }
     
     //Task for the queue
-    private class PhotoToLoad
-    {
+    private class PhotoToLoad {
         public String url;
         public ImageView imageView;
         public PhotoToLoad(String u, ImageView i){
@@ -159,8 +156,7 @@ public class ImageLoader {
     }
     
     //Used to display bitmap in the UI thread
-    class BitmapDisplayer implements Runnable
-    {
+    class BitmapDisplayer implements Runnable {
         Bitmap bitmap;
         PhotoToLoad photoToLoad;
         public BitmapDisplayer(Bitmap b, PhotoToLoad p){bitmap=b;photoToLoad=p;}
@@ -178,6 +174,10 @@ public class ImageLoader {
     public void clearCache() {
         memoryCache.clear();
         fileCache.clear();
+    }
+    
+    public void clearMemCache() {
+    	memoryCache.clear();
     }
 
 	public MemoryCache getMemoryCache() {

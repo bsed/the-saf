@@ -46,6 +46,8 @@ public class SAFApp extends Application {
 
 	public ImageLoader imageLoader;
 	private static SAFApp instance;
+	
+	private int defaultImageId;
 
 	/**
 	 * @see android.app.Application#onCreate()
@@ -61,13 +63,11 @@ public class SAFApp extends Application {
 
 		session = new HashMap<String, Object>();
 		activityManager = new ArrayList<Activity>();
-		imageLoader = new ImageLoader(instance);// 需要使用ImageLoader组件时,必须设置SAFConfig中default_img_id值,如有需要可覆盖SAFConfig中DIR的值
+		imageLoader = new ImageLoader(instance,defaultImageId);// 使用ImageLoader组件时,必须设置defaultImageId,如有需要可覆盖SAFConfig中DIR的值
 
 		PackageManager manager = this.getPackageManager();
 		try {
 			PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
-			// session.put(Constant.VERSION, info.versionName);
-			// session.put(Constant.USER_STATE_KEY, Constant.USER_STATE_NORMAL);
 			deviceid = getDeviceId();
 			osVersion = Build.VERSION.RELEASE;
 			mobileType = Build.MODEL;
@@ -134,5 +134,14 @@ public class SAFApp extends Application {
 	@Override
 	public void onLowMemory() {
 		super.onLowMemory();
+		imageLoader.clearMemCache();
+	}
+
+	public int getDefaultImageId() {
+		return defaultImageId;
+	}
+
+	public void setDefaultImageId(int defaultImageId) {
+		this.defaultImageId = defaultImageId;
 	}
 }
