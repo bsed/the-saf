@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
-import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,17 +18,14 @@ import java.util.zip.GZIPInputStream;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicHeader;
@@ -37,17 +33,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
-
-import cn.salesuite.saf.utils.StringHelper;
 
 import android.text.TextUtils;
 import android.util.Log;
+import cn.salesuite.saf.utils.StringHelper;
 
 /**
  * 使用CommHttpClient时，可以访问http/https类型的url,支持http gzip压缩的方式传输<br>
- * 如果需要访问https的url需要使用CommHttpClient httpClient = new CommHttpClient(true);
  * @author Tony Shen
  *
  */
@@ -61,18 +54,18 @@ public class CommHttpClient {
 		httpClient = createHttpClient();
 	}
 	
-	/**
-	 * 当httpsFlag为true时,创建httpsCilent<br>
-	 * 当httpsFlag为false时,创建httpCilent
-	 * @param httpsFlag
-	 */
-	public CommHttpClient(boolean httpsFlag) {
-		if (httpsFlag) {
-			httpClient = createHttpsClient();
-		} else {
-			httpClient = createHttpClient();
-		}
-	}
+//	/**
+//	 * 当httpsFlag为true时,创建httpsCilent<br>
+//	 * 当httpsFlag为false时,创建httpCilent
+//	 * @param httpsFlag
+//	 */
+//	public CommHttpClient(boolean httpsFlag) {
+//		if (httpsFlag) {
+//			httpClient = createHttpsClient();
+//		} else {
+//			httpClient = createHttpClient();
+//		}
+//	}
 	
 	/**
 	 * Gets an instance of AndroidHttpClient if the devices has it (it was
@@ -98,7 +91,7 @@ public class CommHttpClient {
 			final SchemeRegistry registry = new SchemeRegistry();
 			registry.register(new Scheme("http", PlainSocketFactory
 					.getSocketFactory(), 80));
-			registry.register(new Scheme("https", SSLSocketFactory
+			registry.register(new Scheme("https", MySSLSocketFactory
 					.getSocketFactory(), 443));
 
 			final ThreadSafeClientConnManager manager = new ThreadSafeClientConnManager(
@@ -136,33 +129,33 @@ public class CommHttpClient {
 		return httpParams;
 	}
 	
-	/**
-	 * 创建基于https能访问的DefaultHttpClient
-	 * @return
-	 */
-	private DefaultHttpClient createHttpsClient() {
-		try {
-	        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-	        trustStore.load(null, null);
-
-	        SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-	        sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-	        HttpParams params = new BasicHttpParams();
-	        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-	        HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-	        SchemeRegistry registry = new SchemeRegistry();
-	        registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-	        registry.register(new Scheme("https", sf, 443));
-
-	        ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
-
-	        return new DefaultHttpClient(ccm, params);
-	    } catch (Exception e) {
-	        return new DefaultHttpClient();
-	    }
-	}
+//	/**
+//	 * 创建基于https能访问的DefaultHttpClient
+//	 * @return
+//	 */
+//	private DefaultHttpClient createHttpsClient() {
+//		try {
+//	        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+//	        trustStore.load(null, null);
+//
+//	        SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
+//	        sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+//
+//	        HttpParams params = new BasicHttpParams();
+//	        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+//	        HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+//
+//	        SchemeRegistry registry = new SchemeRegistry();
+//	        registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+//	        registry.register(new Scheme("https", sf, 443));
+//
+//	        ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
+//
+//	        return new DefaultHttpClient(ccm, params);
+//	    } catch (Exception e) {
+//	        return new DefaultHttpClient();
+//	    }
+//	}
 	
 	/**
 	 * 创建http/https请求
