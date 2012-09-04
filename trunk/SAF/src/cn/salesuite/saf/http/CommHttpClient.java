@@ -6,9 +6,6 @@ package cn.salesuite.saf.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,7 +34,6 @@ import org.apache.http.protocol.HTTP;
 
 import android.text.TextUtils;
 import android.util.Log;
-import cn.salesuite.saf.utils.StringHelper;
 
 /**
  * 使用CommHttpClient时，可以访问http/https类型的url,支持http gzip压缩的方式传输<br>
@@ -46,81 +42,32 @@ import cn.salesuite.saf.utils.StringHelper;
  */
 public class CommHttpClient {
 
+
 	private static final String TAG = "CommHttpClient";
 	public static final int ONE_MINUTE = 60000;
-	private HttpClient httpClient;
+	public HttpClient httpClient;
 	
 	public CommHttpClient() {
 		httpClient = createHttpClient();
 	}
 	
-//	/**
-//	 * 当httpsFlag为true时,创建httpsCilent<br>
-//	 * 当httpsFlag为false时,创建httpCilent
-//	 * @param httpsFlag
-//	 */
-//	public CommHttpClient(boolean httpsFlag) {
-//		if (httpsFlag) {
-//			httpClient = createHttpsClient();
-//		} else {
-//			httpClient = createHttpClient();
-//		}
-//	}
-	
 	/**
-	 * Gets an instance of AndroidHttpClient if the devices has it (it was
-	 * introduced in 2.2), or falls back on a http client that should work
-	 * reasonably well.
-	 *
+	 * 创建httpclient对象,支持访问http/https的url
 	 * @return a working instance of an HttpClient
 	 */
 	private HttpClient createHttpClient() {
-		HttpClient hc;
-		try {
-			final Class<?> ahcClass = Class
-					.forName("android.net.http.AndroidHttpClient");
-			final Method newInstance = ahcClass.getMethod("newInstance",
-					String.class);
-			hc = (HttpClient) newInstance.invoke(null, TAG);
+		HttpParams params = createHttpParams();
+		
+		SchemeRegistry registry = new SchemeRegistry();
+		registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		registry.register(new Scheme("https", MySSLSocketFactory.getSocketFactory(), 443));
 
-		} catch (final ClassNotFoundException e) {
-			DefaultHttpClient dhc = new DefaultHttpClient(createHttpParams());
-			final HttpParams params = dhc.getParams();
-			dhc = null;
-
-			final SchemeRegistry registry = new SchemeRegistry();
-			registry.register(new Scheme("http", PlainSocketFactory
-					.getSocketFactory(), 80));
-			registry.register(new Scheme("https", MySSLSocketFactory
-					.getSocketFactory(), 443));
-
-			final ThreadSafeClientConnManager manager = new ThreadSafeClientConnManager(
-					params, registry);
-			hc = new DefaultHttpClient(manager, params);
-
-		} catch (final NoSuchMethodException e) {
-
-			final RuntimeException re = new RuntimeException(
-					"Programming error");
-			re.initCause(e);
-			throw re;
-
-		} catch (final IllegalAccessException e) {
-			final RuntimeException re = new RuntimeException(
-					"Programming error");
-			re.initCause(e);
-			throw re;
-
-		} catch (final InvocationTargetException e) {
-			final RuntimeException re = new RuntimeException(
-					"Programming error");
-			re.initCause(e);
-			throw re;
-		}
-		return hc;
+		ThreadSafeClientConnManager manager = new ThreadSafeClientConnManager(
+				params, registry);
+		return new DefaultHttpClient(manager, params);
 	}
 	
-	private static HttpParams createHttpParams() {
+	private HttpParams createHttpParams() {
 		HttpParams httpParams = new BasicHttpParams();
 		HttpConnectionParams.setStaleCheckingEnabled(httpParams, false);
 		HttpConnectionParams.setConnectionTimeout(httpParams, ONE_MINUTE);
@@ -128,34 +75,6 @@ public class CommHttpClient {
 		HttpConnectionParams.setSocketBufferSize(httpParams, 1024*2);
 		return httpParams;
 	}
-	
-//	/**
-//	 * 创建基于https能访问的DefaultHttpClient
-//	 * @return
-//	 */
-//	private DefaultHttpClient createHttpsClient() {
-//		try {
-//	        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-//	        trustStore.load(null, null);
-//
-//	        SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-//	        sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-//
-//	        HttpParams params = new BasicHttpParams();
-//	        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-//	        HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-//
-//	        SchemeRegistry registry = new SchemeRegistry();
-//	        registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-//	        registry.register(new Scheme("https", sf, 443));
-//
-//	        ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
-//
-//	        return new DefaultHttpClient(ccm, params);
-//	    } catch (Exception e) {
-//	        return new DefaultHttpClient();
-//	    }
-//	}
 	
 	/**
 	 * 创建http/https请求
@@ -289,25 +208,11 @@ public class CommHttpClient {
 		return str;
 	}
 	
-	/**
-	 * 并对字符串进行md5加密
-	 * @param needMD5String
-	 * @return
-	 */
-	public static String getSign(String needMD5String) {
-		try {
-			needMD5String = URLEncoder.encode(needMD5String, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return StringHelper.md5(needMD5String);
-	}
-	
 	private void executeResponseCallback(
 			final OnResponseReceivedListener callback, final InputStream response) {
 			callback.onResponseReceived(response);
 	}
-
+	
 	public interface OnResponseReceivedListener{
 		public void onResponseReceived(InputStream response);
 	}
