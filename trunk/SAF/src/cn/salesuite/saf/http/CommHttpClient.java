@@ -42,8 +42,7 @@ import android.util.Log;
  */
 public class CommHttpClient {
 
-
-	private static final String TAG = "CommHttpClient";
+	public static final String TAG = "CommHttpClient";
 	public static final int ONE_MINUTE = 60000;
 	public HttpClient httpClient;
 	
@@ -74,6 +73,49 @@ public class CommHttpClient {
 		HttpConnectionParams.setSoTimeout(httpParams, ONE_MINUTE);
 		HttpConnectionParams.setSocketBufferSize(httpParams, 1024*2);
 		return httpParams;
+	}
+	
+	/**
+	 * 创建http/https请求
+	 * @param url
+	 * @param customizedHeader
+	 * @param callback
+	 */
+	public void makeHTTPRequest(String url, 
+			Map<String, String> customizedHeader,
+			OnResponseReceivedListener callback) 
+	        throws  IOException {
+		Log.d("URL", url);
+		 
+		if(customizedHeader==null){
+			customizedHeader = new HashMap<String, String>();
+		}
+		customizedHeader.put("Accept-Encoding", "gzip");
+		customizedHeader.put("Connection" , "Keep-Alive");
+		
+		HttpPost httpRequest = createHttpPost(url, customizedHeader);
+		HttpResponse httpResponse = executeHttpRequest(httpRequest);
+		HttpEntity httpEntity = httpResponse.getEntity();
+		
+		//success
+		if (httpResponse.getStatusLine().getStatusCode() == 200) {
+			Header contentEncoding = httpResponse.getFirstHeader("Content-Encoding");
+			//String response = EntityUtils.toString(httpEntity);
+			InputStream instream = httpEntity.getContent();
+			if (contentEncoding!=null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
+				instream = new GZIPInputStream(instream);
+				executeResponseCallback(callback, instream);
+			} else {
+				executeResponseCallback(callback, instream);
+			}
+		} else {
+			Log.e("error", "Request failure! url:"+url);
+			
+			if(httpEntity != null)
+				httpEntity.consumeContent();
+		}
+
+		httpClient.getConnectionManager().shutdown();
 	}
 	
 	/**
@@ -127,6 +169,20 @@ public class CommHttpClient {
 		httpClient.getConnectionManager().shutdown();
 	}
 	
+	public HttpPost createHttpPost(String url,Map<String, String> customizedHeader) {
+		HttpPost httpRequest = new HttpPost(url);
+
+		if(customizedHeader != null) {
+			for (Map.Entry<String, String> item : customizedHeader.entrySet()) {
+				Header header = new BasicHeader(item.getKey(), item.getValue());
+				httpRequest.addHeader(header);
+				Log.i(TAG, item.getKey()+"="+item.getValue());
+			}
+		}
+
+		return httpRequest;
+	}
+	
 	public HttpPost createHttpPost(String url, Map<String, String> postdata, Map<String, String> customizedHeader) {
 		HttpPost httpRequest = new HttpPost(url);
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -155,7 +211,6 @@ public class CommHttpClient {
 		Log.d(TAG, "executing HttpRequest for:" + httpRequest.getURI().toString());
 		
 		try {
-			//httpClient.getConnectionManager().closeExpiredConnections();
 			return httpClient.execute(httpRequest);
 		} catch (IOException e) {
 			httpRequest.abort();

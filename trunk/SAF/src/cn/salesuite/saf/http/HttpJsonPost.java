@@ -5,7 +5,6 @@ package cn.salesuite.saf.http;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -15,7 +14,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
 
 import android.util.Log;
 
@@ -28,7 +26,7 @@ import com.alibaba.fastjson.JSON;
  */
 public class HttpJsonPost extends HttpJsonClient{
 	
-	private static final String TAG = "HttpJsonPost";
+	public static final String TAG = "HttpJsonPost";
 	
     public HttpJsonPost() {
         super();
@@ -80,20 +78,6 @@ public class HttpJsonPost extends HttpJsonClient{
 		}
 
 		httpClient.getConnectionManager().shutdown();
-	}
-	
-	public HttpPost createHttpPost(String url,Map<String, String> customizedHeader) {
-		HttpPost httpRequest = new HttpPost(url);
-
-		if(customizedHeader != null) {
-			for (Map.Entry<String, String> item : customizedHeader.entrySet()) {
-				Header header = new BasicHeader(item.getKey(), item.getValue());
-				httpRequest.addHeader(header);
-				Log.i(TAG, item.getKey()+"="+item.getValue());
-			}
-		}
-
-		return httpRequest;
 	}
 	
     public StringEntity objToEntity(Object jsonObj) throws IOException {

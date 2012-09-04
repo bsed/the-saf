@@ -16,6 +16,8 @@ import com.alibaba.fastjson.JSON;
  */
 public class HttpJsonClient extends CommHttpClient{
 
+	public static final String TAG = "HttpJsonClient";
+	
     public <T> T parseAs(Class<T> cls,InputStream response) throws IOException {
     	String text = getContentAsText(response);
     	return JSON.parseObject(text, cls);
