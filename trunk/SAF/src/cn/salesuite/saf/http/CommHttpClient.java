@@ -41,13 +41,18 @@ import android.util.Log;
  *
  */
 public class CommHttpClient {
-
-	public static final String TAG = "CommHttpClient";
+	
+	public String TAG = "CommHttpClient";
 	public static final int ONE_MINUTE = 60000;
 	public HttpClient httpClient;
 	
 	public CommHttpClient() {
 		httpClient = createHttpClient();
+	}
+	
+	public CommHttpClient(String TAG) {
+		httpClient = createHttpClient();
+		this.TAG = TAG;
 	}
 	
 	/**
@@ -74,12 +79,13 @@ public class CommHttpClient {
 		HttpConnectionParams.setSocketBufferSize(httpParams, 1024*2);
 		return httpParams;
 	}
-	
+
 	/**
 	 * 创建http/https请求
-	 * @param url
+	 * @param url 完整的url链接，包括需要传递的参数
 	 * @param customizedHeader
 	 * @param callback
+	 * @throws IOException
 	 */
 	public void makeHTTPRequest(String url, 
 			Map<String, String> customizedHeader,
@@ -120,8 +126,8 @@ public class CommHttpClient {
 	
 	/**
 	 * 创建http/https请求
-	 * @param url
-	 * @param postdata
+	 * @param url 接口地址
+	 * @param postdata 把需要传递的参数封装到Map对象
 	 * @param customizedHeader
 	 * @param callback
 	 * @throws IOException

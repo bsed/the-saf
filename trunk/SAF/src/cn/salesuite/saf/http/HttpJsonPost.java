@@ -20,16 +20,19 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 
 /**
+ * 可以发送json消息实体的httpclient
  * @author Tony Shen
  *
  * 
  */
 public class HttpJsonPost extends HttpJsonClient{
-	
-	public static final String TAG = "HttpJsonPost";
-	
+
     public HttpJsonPost() {
-        super();
+    	this("HttpJsonPost");
+    }
+    
+    public HttpJsonPost(String TAG) {
+        super(TAG);
     }
 	
 	/**

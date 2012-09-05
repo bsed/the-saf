@@ -10,13 +10,20 @@ import java.io.InputStreamReader;
 import com.alibaba.fastjson.JSON;
 
 /**
+ * 增加对返回的json数据解析成相应的对象
  * @author Tony Shen
  *
  * 
  */
 public class HttpJsonClient extends CommHttpClient{
 
-	public static final String TAG = "HttpJsonClient";
+	public HttpJsonClient() {
+		this("HttpJsonClient");
+	}
+
+	public HttpJsonClient(String TAG) {
+		super(TAG);
+	}
 	
     public <T> T parseAs(Class<T> cls,InputStream response) throws IOException {
     	String text = getContentAsText(response);
