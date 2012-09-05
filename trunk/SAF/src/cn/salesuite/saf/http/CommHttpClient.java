@@ -44,6 +44,7 @@ public class CommHttpClient {
 	
 	public String TAG = "CommHttpClient";
 	public static final int ONE_MINUTE = 60000;
+    private static final int DEFAULT_MAX_RETRIES = 5;
 	public HttpClient httpClient;
 	
 	public CommHttpClient() {
@@ -68,7 +69,10 @@ public class CommHttpClient {
 
 		ThreadSafeClientConnManager manager = new ThreadSafeClientConnManager(
 				params, registry);
-		return new DefaultHttpClient(manager, params);
+		DefaultHttpClient httpClient = new DefaultHttpClient(manager, params);
+		httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES));
+		
+		return httpClient;
 	}
 	
 	private HttpParams createHttpParams() {
