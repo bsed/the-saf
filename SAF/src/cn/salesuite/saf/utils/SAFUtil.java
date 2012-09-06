@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.salesuite.saf.config.SAFConfig;
 
 import android.app.ActivityManager;
@@ -215,5 +217,14 @@ public class SAFUtil {
 			e.printStackTrace();
 		}
 		return inputStream;
+	}
+	
+	/**
+	 * 将对象以json格式打印出来
+	 * @param obj
+	 * @return
+	 */
+	public static String printObject(Object obj) {
+		return JSON.toJSONString(obj);
 	}
 }
