@@ -33,14 +33,14 @@ public class ImageLoader {
 	
 	MemoryCache memoryCache;
     FileCache fileCache;
-    private Map<ImageView, String> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
+    private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService;
     int stub_id;
     
     public ImageLoader(Context context,int default_img_id){
     	memoryCache = new MemoryCache();
-        fileCache=new FileCache(context);
-        executorService=Executors.newFixedThreadPool(5);
+        fileCache = new FileCache(context);
+        executorService = Executors.newFixedThreadPool(5);
         stub_id = default_img_id;
     }
     
@@ -49,8 +49,7 @@ public class ImageLoader {
         Bitmap bitmap=memoryCache.get(url);
         if(bitmap!=null)
             imageView.setImageBitmap(bitmap);
-        else
-        {
+        else {
             queuePhoto(url, imageView);
             imageView.setImageResource(stub_id);
         }
@@ -159,9 +158,13 @@ public class ImageLoader {
     class BitmapDisplayer implements Runnable {
         Bitmap bitmap;
         PhotoToLoad photoToLoad;
-        public BitmapDisplayer(Bitmap b, PhotoToLoad p){bitmap=b;photoToLoad=p;}
-        public void run()
-        {
+        
+        public BitmapDisplayer(Bitmap b, PhotoToLoad p){
+        	bitmap=b;
+        	photoToLoad=p;
+        }
+        
+        public void run(){
             if(imageViewReused(photoToLoad))
                 return;
             if(bitmap!=null)
@@ -171,11 +174,17 @@ public class ImageLoader {
         }
     }
 
+    /**
+     * 清空所有缓存
+     */
     public void clearCache() {
         memoryCache.clear();
         fileCache.clear();
     }
     
+    /**
+     * 清空内存中的缓存
+     */
     public void clearMemCache() {
     	memoryCache.clear();
     }

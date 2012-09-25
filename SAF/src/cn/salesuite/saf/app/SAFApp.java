@@ -24,8 +24,8 @@ import cn.salesuite.saf.config.SAFConstant;
 
 /**
  * SAFApp是自定义的Application,session可作为缓存存放app的全局变量<br>
- * SAFApp并不是每个app都需要使用,可自由选择<br>
- * 如需使用,则在AndroidManifest.xml中配置,<br>
+ * SAFApp并不是每个app都需要使用,可自由选择,也可以继承它<br>
+ * 如需使用SAFApp,则在AndroidManifest.xml中配置,<br>
  * 在application中增加android:name="cn.salesuite.saf.app.SAFApp"
  * 
  * @author Tony Shen
@@ -136,11 +136,11 @@ public class SAFApp extends Application {
 		super.onLowMemory();
 		imageLoader.clearMemCache();
 	}
-
-	public int getDefaultImageId() {
-		return defaultImageId;
-	}
-
+    
+	/**
+	 * 子类继承时,可使用自己的默认图片
+	 * @param defaultImageId
+	 */
 	public void setDefaultImageId(int defaultImageId) {
 		this.defaultImageId = defaultImageId;
 	}

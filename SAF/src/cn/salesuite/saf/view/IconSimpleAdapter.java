@@ -16,6 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
+ * 封装图片和文字的Adapter<br>
+ * 使用方法：<br>
+ * IconSimpleAdapter adapter = new IconSimpleAdapter(ListClusteredPin.this, data,<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R.layout.list_poi_row, new String[] { "ic_red_circle","name","address","distance","poi_bearing"},<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new int[] {R.id.ic_red_circle,R.id.name, R.id.address, R.id.distance, R.id.poi_bearing});<br>
+ * listView.setAdapter(adapter);
  * @author Tony Shen
  *
  */
@@ -26,6 +32,14 @@ public class IconSimpleAdapter extends BaseAdapter{
 	private int mResource;
 	private int[] mViews;
 
+	/**
+	 * 构造IconSimpleAdapter
+	 * @param context
+	 * @param list
+	 * @param resource
+	 * @param keys
+	 * @param views
+	 */
 	public IconSimpleAdapter(Context context, List<Map<String, Object>> list, int resource, String[] keys, int[] views) {
 		mInflater = LayoutInflater.from(context);
 		mList = list;
