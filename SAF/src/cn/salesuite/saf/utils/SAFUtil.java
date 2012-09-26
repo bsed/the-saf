@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSON;
 
 import cn.salesuite.saf.config.SAFConfig;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -23,6 +24,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 
 /**
@@ -31,6 +34,26 @@ import android.telephony.TelephonyManager;
  *
  */
 public class SAFUtil {
+	
+	public static boolean isFroyoOrHigher() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO;
+    }
+	
+	public static boolean isGingerbreadOrHigher() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD;
+	}
+	
+	public static boolean isHoneycombOrHigher() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    }
+	
+	public static boolean isICSOrHigher() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+    }
+	
+	public static boolean isJellyBeanOrHigher() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    }
 
 	public static boolean isWiFiActive(Context context) { 
 		WifiManager wm=null;
@@ -43,7 +66,7 @@ public class SAFUtil {
 		if(wm==null || wm.isWifiEnabled()==false) return false;
 		
 		return true;
-    }  
+    }
 	
 	/**
 	 * 安装apk
@@ -227,4 +250,18 @@ public class SAFUtil {
 	public static String printObject(Object obj) {
 		return JSON.toJSONString(obj);
 	}
+	
+	/**
+	 * 封装AsyncTask,当使用Android 3.0以及以上版本时可以使用线程池执行AsyncTask
+	 * @param task
+	 * @param args
+	 */
+	@TargetApi(11)
+    public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> task, T... args) {
+        if (isHoneycombOrHigher()) {
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, args);
+        } else {
+            task.execute(args);
+        }
+    }
 }
