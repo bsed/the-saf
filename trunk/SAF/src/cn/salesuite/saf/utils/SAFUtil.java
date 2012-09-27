@@ -3,6 +3,7 @@
  */
 package cn.salesuite.saf.utils;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -264,4 +265,34 @@ public class SAFUtil {
             task.execute(args);
         }
     }
+	
+	/**
+	 * 对文件设置root权限
+	 * @param filePath
+	 * @return
+	 */
+	public static boolean upgradeRootPermission(String filePath) {
+	    Process process = null;
+	    DataOutputStream os = null;
+	    try {
+	        String cmd="chmod 777 " + filePath;
+	        process = Runtime.getRuntime().exec("su"); //切换到root帐号
+	        os = new DataOutputStream(process.getOutputStream());
+	        os.writeBytes(cmd + "\n");
+	        os.writeBytes("exit\n");
+	        os.flush();
+	        process.waitFor();
+	    } catch (Exception e) {
+	        return false;
+	    } finally {
+	        try {
+	            if (os != null) {
+	                os.close();
+	            }
+	            process.destroy();
+	        } catch (Exception e) {
+	        }
+	    }
+	    return true;
+	}
 }
