@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Looper;
 import android.telephony.TelephonyManager;
 
 /**
@@ -295,4 +296,14 @@ public class SAFUtil {
 	    }
 	    return true;
 	}
+	
+	/**
+	 * 判断当前线程是否ui线程
+	 * @return
+	 */
+	public static boolean isUIThread(){
+    	long uiId = Looper.getMainLooper().getThread().getId();
+    	long cId = Thread.currentThread().getId();
+    	return uiId == cId;	
+    }
 }
