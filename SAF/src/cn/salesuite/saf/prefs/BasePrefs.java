@@ -76,4 +76,14 @@ public class BasePrefs {
             editor = prefs.edit();
         }
     }
+    
+    public void remove(String key) {
+    	ensureEditorAvailability();
+    	editor.remove(key);
+    }
+    
+    public void clear() {
+    	ensureEditorAvailability();
+    	editor.clear();
+    }
 }
