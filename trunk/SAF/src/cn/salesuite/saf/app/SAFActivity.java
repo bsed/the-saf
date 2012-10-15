@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 import cn.salesuite.saf.config.SAFConstant;
+import cn.salesuite.saf.exception.GlobalExceptionHandler;
 import cn.salesuite.saf.location.CellIDInfo;
 import cn.salesuite.saf.location.CellIDInfoManager;
 import cn.salesuite.saf.location.LocationManager;
@@ -68,6 +69,8 @@ public class SAFActivity extends LocationActivity{
 
 		TAG = SAFUtil.makeLogTag(this.getClass());
 		addActivityToManager(this);
+		
+		GlobalExceptionHandler.register(this);
 	}
 	
 	protected  void addActivityToManager(Activity act) {
