@@ -30,10 +30,9 @@ public class DefaultExceptionHandler implements Thread.UncaughtExceptionHandler 
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
-				// Will not happen
 			}
 			android.os.Process.killProcess(android.os.Process.myPid());
-			System.exit(1);
+			System.exit(10);
 		}
 
 	}
