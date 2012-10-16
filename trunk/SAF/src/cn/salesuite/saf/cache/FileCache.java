@@ -25,8 +25,14 @@ public class FileCache {
 					android.os.Environment.getExternalStorageDirectory(),SAFConfig.CACHE_DIR);
 		else
 			cacheDir = context.getCacheDir();
-		if (!cacheDir.exists())
-			cacheDir.mkdirs();
+		if (!cacheDir.exists()) {
+			boolean b = cacheDir.mkdirs();
+			if (!b) {
+				cacheDir = context.getCacheDir();
+				if (!cacheDir.exists())
+					cacheDir.mkdirs();
+			}
+		}
 	}
 
 	public File getFile(String url) {
