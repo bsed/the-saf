@@ -259,15 +259,17 @@ public class LocationHelper implements LocationListener{
 	    }catch(Exception e){
 			e.printStackTrace();
 		}*/
-    	if(locationThread.getStatus() == LocationThread.STATUS_BUSY){
-    		return;
-    	}
-    	location.isReady = true;
-    	synchronized(location){
-	    	//Call Google Gear to retrieve location
-	    	Log.d("LocationHelper", "Thread nofitying");
-	    	location.notify();
-    	}
+    	if(locationThread!=null) {
+			if(locationThread.getStatus() == LocationThread.STATUS_BUSY){
+	    		return;
+	    	}
+	    	location.isReady = true;
+	    	synchronized(location){
+		    	//Call Google Gear to retrieve location
+		    	Log.d("LocationHelper", "Thread nofitying");
+		    	location.notify();
+	    	}
+		}
     	
     }
     
