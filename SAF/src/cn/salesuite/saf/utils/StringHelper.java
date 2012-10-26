@@ -33,7 +33,7 @@ public class StringHelper {
 	 * @return
 	 */
 	public static boolean checkMobile(String str) {
-		Pattern p = Pattern.compile("1[358][0-9]{9}");
+		Pattern p = Pattern.compile("1[3458][0-9]{9}");
 		Matcher m = p.matcher(str);
 		return m.matches();
 	}
