@@ -182,6 +182,15 @@ public class StringHelper {
 	}
 	
 	/**
+	 * 判断字符数不为空
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNotEmpty(String str){
+        return !StringHelper.isEmpty(str);
+    }
+	
+	/**
 	 * 如果str字符串为null,返回为"";如果字符串不为空,返回原来的字符串
 	 * @param str
 	 * @return
