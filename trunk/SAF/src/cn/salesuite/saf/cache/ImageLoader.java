@@ -44,6 +44,11 @@ public class ImageLoader {
         stub_id = default_img_id;
     }
     
+    /**
+     * 显示图片，如果未能获取图片，则显示全局的默认图片
+     * @param url
+     * @param imageView
+     */
     public void displayImage(String url, ImageView imageView) {
         imageViews.put(imageView, url);
         Bitmap bitmap=memoryCache.get(url);
@@ -54,9 +59,31 @@ public class ImageLoader {
             imageView.setImageResource(stub_id);
         }
     }
+    
+    /**
+     * 显示图片，可自定义默认显示的图片
+     * @param url
+     * @param imageView
+     * @param imageId 默认图片，可能区别与default_img_id
+     */
+    public void displayImage(String url, ImageView imageView, int imageId) {
+        imageViews.put(imageView, url);
+        Bitmap bitmap=memoryCache.get(url);
+        if(bitmap!=null)
+            imageView.setImageBitmap(bitmap);
+        else {
+            queuePhoto(url, imageView, imageId);
+            imageView.setImageResource(imageId);
+        }
+    }
         
     private void queuePhoto(String url, ImageView imageView) {
         PhotoToLoad p=new PhotoToLoad(url, imageView);
+        executorService.submit(new PhotosLoader(p));
+    }
+    
+    private void queuePhoto(String url, ImageView imageView, int imageId) {
+        PhotoToLoad p=new PhotoToLoad(url, imageView, imageId);
         executorService.submit(new PhotosLoader(p));
     }
     
@@ -121,9 +148,18 @@ public class ImageLoader {
     private class PhotoToLoad {
         public String url;
         public ImageView imageView;
+        public int imageId;
+        
         public PhotoToLoad(String u, ImageView i){
             url=u; 
             imageView=i;
+            this.imageId = stub_id;
+        }
+        
+        public PhotoToLoad(String u, ImageView i, int imageId){
+            url=u; 
+            imageView=i;
+            this.imageId = imageId;
         }
     }
     
@@ -170,7 +206,7 @@ public class ImageLoader {
             if(bitmap!=null)
                 photoToLoad.imageView.setImageBitmap(bitmap);
             else
-                photoToLoad.imageView.setImageResource(stub_id);
+                photoToLoad.imageView.setImageResource(photoToLoad.imageId);
         }
     }
 
