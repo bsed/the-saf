@@ -75,15 +75,15 @@ public class LocationThread extends Thread{
 				location.clear();
 				
 				if (!threadLocation.forceGoogle && lh.locationHandler.equalsIgnoreCase("Skyhook")) {
-			    	if(LocationUtil.isWiFiActive(context)){
+//			    	if(LocationUtil.isWiFiActive(context)){
 				    	if(!(lhd instanceof SkyhookHandler)){
 				    		lhd = new SkyhookHandler(lh,context);				    		
 				    	}
-			    	}else{
-			    		if(!(lhd instanceof GoogleGearHandler)){
-				    		lhd = new GoogleGearHandler(lh,context);				    		
-				    	}
-			    	}			    	
+//			    	}else{
+//			    		if(!(lhd instanceof GoogleGearHandler)){
+//				    		lhd = new GoogleGearHandler(lh,context);				    		
+//				    	}
+//			    	}			    	
 				}else if(threadLocation.forceGoogle || lh.locationHandler.equalsIgnoreCase("Google")){
 					if(!(lhd instanceof GoogleGearHandler)){
 			    		lhd = new GoogleGearHandler(lh,context);				    		
