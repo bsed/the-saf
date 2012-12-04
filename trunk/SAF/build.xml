@@ -97,9 +97,13 @@
 			<!-- 保留签名，解决泛型问题 -->
 			<keepattribute name="Signature" />
 
-			<!-- Preserve all public classes, and their public and protected fields
-						        and methods. -->
+            <!-- 保留回调接口中的方法 -->
+            <keep name="cn.salesuite.saf.http.CommHttpClient.OnResponseReceivedListener">
+                <method name="onResponseReceived"/>
+            </keep>
 
+            <!-- Preserve all public classes, and their public and protected fields
+						        and methods. -->            			
 			<keep access="public" >
 				<field access="public protected" />
 				<method access="public protected" />
