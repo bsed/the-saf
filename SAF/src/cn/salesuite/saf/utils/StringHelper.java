@@ -307,4 +307,14 @@ public class StringHelper {
             return html.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&amp;", "&").replaceAll("&quot;","\"");
         }
     }
+    
+	/**
+	 * 判断字符串是否为数字,可以判断正数、负数、int、float、double
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNumeric(String str) {
+		Pattern pattern = Pattern.compile("^[-\\+]?[.\\d]*$"); 
+		return pattern.matcher(str).matches();
+	}
 }
