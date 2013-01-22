@@ -293,6 +293,21 @@ public class StringHelper {
     	return new StringBuffer(str).reverse().toString();  
     }
     
+	/**
+	 * 字符串数组反转
+	 * @param strs
+	 * @return
+	 */
+	public static String[] reverse(String[] strs) {
+		for (int i = 0; i < strs.length; i++) {
+			String top = strs[0];
+			for (int j = 1; j < strs.length - i; j++) {
+				strs[j - 1] = strs[j];
+			}
+			strs[strs.length - i - 1] = top;
+		}
+		return strs;
+	}
 
     /**
      * html的转义字符转换成正常的字符串
