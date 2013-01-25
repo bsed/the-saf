@@ -19,10 +19,12 @@ import android.widget.TextView;
  * 封装图片和文字的Adapter<br>
  * 使用方法：<br>
  * <pre>
+ * <code>
  *  IconSimpleAdapter adapter = new IconSimpleAdapter(ListClusteredPin.this, data,
  *     R.layout.list_poi_row, new String[] { "ic_red_circle","name","address","distance","poi_bearing"},
  *     new int[] {R.id.ic_red_circle,R.id.name, R.id.address, R.id.distance, R.id.poi_bearing});
  *  listView.setAdapter(adapter);
+ *  </code>
  *  </pre>
  * @author Tony Shen
  *
