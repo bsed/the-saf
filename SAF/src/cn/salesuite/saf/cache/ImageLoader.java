@@ -17,10 +17,10 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.widget.ImageView;
 import cn.salesuite.saf.utils.IOUtil;
 
@@ -36,6 +36,7 @@ public class ImageLoader {
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService;
     int stub_id;
+    Handler handler=new Handler();
     
     public ImageLoader(Context context,int default_img_id){
     	memoryCache = new MemoryCache();
@@ -178,8 +179,7 @@ public class ImageLoader {
             if(imageViewReused(photoToLoad))
                 return;
             BitmapDisplayer bd=new BitmapDisplayer(bmp, photoToLoad);
-            Activity a=(Activity)photoToLoad.imageView.getContext();
-            a.runOnUiThread(bd);
+            handler.post(bd);
         }
     }
     
