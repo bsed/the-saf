@@ -205,11 +205,25 @@ public class SAFUtil {
 	}
 	
 	/**
-	* 根据手机的分辨率从 dp 的单位 转成为 px(像素)
-	*/
+	 * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+	 * @param context
+	 * @param dpValue
+	 * @return
+	 */
 	public static int dip2px(Context context, float dpValue) {
 	  final float scale = context.getResources().getDisplayMetrics().density;
 	  return (int) (dpValue * scale + 0.5f);
+	}
+	
+	/**
+	 * 根据手机的分辨率从  px(像素) 转成为dp
+	 * @param context
+	 * @param pxValue
+	 * @return
+	 */
+	public static int px2dip(Context context, float pxValue) {
+		final float scale = context.getResources().getDisplayMetrics().density;
+	    return (int)(0.5F + pxValue / scale);
 	}
 	
     /**
@@ -298,7 +312,7 @@ public class SAFUtil {
 	}
 	
 	/**
-	 * 判断当前线程是否ui线程
+	 * 判断当前线程是否为ui线程
 	 * @return
 	 */
 	public static boolean isUIThread(){
