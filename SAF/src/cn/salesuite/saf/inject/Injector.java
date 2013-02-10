@@ -18,7 +18,7 @@ import cn.salesuite.saf.inject.annotation.InjectResource;
 import cn.salesuite.saf.inject.annotation.InjectView;
 
 /**
- * 注入views、resource到Activity<br>
+ * 注入view、resource到Activity<br>
  * 在Activity中使用注解，需要使用Injector.injectInto(this);
  * @author Tony Shen
  *
