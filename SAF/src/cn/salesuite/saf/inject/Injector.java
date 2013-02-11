@@ -106,7 +106,7 @@ public class Injector {
 	}
 	
 	/**
-	 * 查找resource，目前暂不支持Arrays、Colors、Animations等 
+	 * 查找resource，目前暂不支持Animations等 
 	 * @param type
 	 * @param field
 	 * @param annotation
@@ -115,13 +115,21 @@ public class Injector {
 	private Object findResource(Class<?> type, Field field,
 			InjectResource annotation) {
         int id = annotation.id();
-        if (type == String.class) {
+        if (type == int.class) {          //从color.xml中获取对应的值
+        	return context.getResources().getColor(id);
+        } else if (type == String.class) {//从strings.xml中获取对应的值
             return context.getString(id);
-        } else if (Drawable.class.isAssignableFrom(type)) {
+        } else if (Drawable.class.isAssignableFrom(type)) {//从drawable文件中获取资源
             return resources.getDrawable(id);
         } else if (Bitmap.class.isAssignableFrom(type)) {
             return BitmapFactory.decodeResource(resources, id);
-        } else {
+        } else if (type.isArray()) {      //从arrays.xml中获取对应的值
+        	if (type.getComponentType() == String.class) {
+        		return context.getResources().getStringArray(id);
+        	}
+        	throw new InjectException("Cannot inject for type " + type + " (field " + field.getName() + ")");
+        }
+        else {
             throw new InjectException("Cannot inject for type " + type + " (field " + field.getName() + ")");
         }
 	}
