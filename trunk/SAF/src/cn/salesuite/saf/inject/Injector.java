@@ -19,12 +19,13 @@ import cn.salesuite.saf.inject.annotation.InjectView;
 
 /**
  * 注入view、resource到Activity<br>
- * 在Activity中使用注解，需要使用Injector.injectInto(this);
+ * 在Activity中使用注解，首先需要使用Injector.injectInto(this);
  * @author Tony Shen
  *
  */
 public class Injector {
-    public static boolean LOG_PERFORMANCE;
+    public static boolean TEST_FLAG;
+    public static String TAG = "Injector";
 
     protected final Context context;
     protected final Object target;
@@ -81,9 +82,9 @@ public class Injector {
                 }
             }
         }
-        if (LOG_PERFORMANCE) {
+        if (TEST_FLAG) {
             long time = System.currentTimeMillis() - start;
-            Log.d("greenInject", "Injected fields in " + time + "ms (" + fields.length + " fields checked)");
+            Log.d(TAG, "Injected fields in " + time + "ms (" + fields.length + " fields checked)");
         }
 	}
 
@@ -107,30 +108,30 @@ public class Injector {
 	
 	/**
 	 * 查找resource，目前暂不支持Animations等 
-	 * @param type
+	 * @param cls
 	 * @param field
 	 * @param annotation
 	 * @return
 	 */
-	private Object findResource(Class<?> type, Field field,
+	private Object findResource(Class<?> cls, Field field,
 			InjectResource annotation) {
         int id = annotation.id();
-        if (type == int.class) {          //从color.xml中获取对应的值
+        if (cls == int.class) {          //从color.xml中获取对应的值
         	return context.getResources().getColor(id);
-        } else if (type == String.class) {//从strings.xml中获取对应的值
+        } else if (cls == String.class) {//从strings.xml中获取对应的值
             return context.getString(id);
-        } else if (Drawable.class.isAssignableFrom(type)) {//从drawable文件中获取资源
+        } else if (Drawable.class.isAssignableFrom(cls)) {//从drawable文件中获取资源
             return resources.getDrawable(id);
-        } else if (Bitmap.class.isAssignableFrom(type)) {
+        } else if (Bitmap.class.isAssignableFrom(cls)) {
             return BitmapFactory.decodeResource(resources, id);
-        } else if (type.isArray()) {      //从arrays.xml中获取对应的值
-        	if (type.getComponentType() == String.class) {
+        } else if (cls.isArray()) {      //从arrays.xml中获取对应的值
+        	if (cls.getComponentType() == String.class) {
         		return context.getResources().getStringArray(id);
         	}
-        	throw new InjectException("Cannot inject for type " + type + " (field " + field.getName() + ")");
+        	throw new InjectException("Cannot inject for type " + cls + " (field " + field.getName() + ")");
         }
         else {
-            throw new InjectException("Cannot inject for type " + type + " (field " + field.getName() + ")");
+            throw new InjectException("Cannot inject for type " + cls + " (field " + field.getName() + ")");
         }
 	}
 	
