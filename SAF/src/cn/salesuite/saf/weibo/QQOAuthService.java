@@ -2,7 +2,7 @@ package cn.salesuite.saf.weibo;
 
 import java.util.HashMap;
 
-import cn.salesuite.saf.utils.LogWrapper;
+import cn.salesuite.saf.log.LogWrapper;
 
 public class QQOAuthService extends OAuthService {
 

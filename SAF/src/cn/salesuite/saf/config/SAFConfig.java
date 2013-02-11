@@ -22,7 +22,7 @@ public class SAFConfig {
 	/**
 	 * number of messages should be saved in log
 	 */
-	public static int LOG_SIZE=200;
+	public static int LOG_SIZE=1000;
 	
 	/**
 	 * Set tag name
