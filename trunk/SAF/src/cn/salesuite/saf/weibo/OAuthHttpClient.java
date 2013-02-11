@@ -28,7 +28,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import cn.salesuite.saf.utils.LogWrapper;
+import cn.salesuite.saf.log.LogWrapper;
 
 
 public class OAuthHttpClient {
