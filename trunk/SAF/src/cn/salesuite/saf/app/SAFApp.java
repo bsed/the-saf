@@ -19,8 +19,8 @@ import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import cn.salesuite.saf.cache.ImageLoader;
 import cn.salesuite.saf.config.SAFConstant;
+import cn.salesuite.saf.imagecache.ImageLoader;
 
 /**
  * SAFApp是自定义的Application,session可作为缓存存放app的全局变量<br>
