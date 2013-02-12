@@ -22,6 +22,18 @@ public class LogWrapper {
 
 	private static LinkedList<String> content = new LinkedList<String>();
 	
+	private static LogWrapper instance = null;
+	
+	private LogWrapper() {
+	}
+	
+	public static LogWrapper getInstance() {
+		if(instance==null){
+			instance = new LogWrapper();
+		}
+		return instance;
+	}
+	
 	public static LinkedList<String> getContent() {
 		return content;
 	}
