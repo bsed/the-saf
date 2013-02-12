@@ -28,7 +28,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import cn.salesuite.saf.log.LogWrapper;
+import android.util.Log;
 
 
 public class OAuthHttpClient {
@@ -41,17 +41,17 @@ public class OAuthHttpClient {
 		HttpConnectionParams.setConnectionTimeout(httpParams,
 				CONNECTION_TIMEOUT);
 		HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
-		LogWrapper.i(">>", url);
+		Log.i(">>", url);
 		HttpGet request = new HttpGet(url);
 		request.setHeader("Content-Encoding", "UTF-8");
 		DefaultHttpClient httpClient = new DefaultHttpClient(httpParams);
 		HttpResponse response = null;
 		response = httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			LogWrapper.i(">>", "SC_OK");
+			Log.i(">>", "SC_OK");
 			return EntityUtils.toString(response.getEntity(), "UTF-8");
 		} else {
-			LogWrapper.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
+			Log.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
 		}
 		return null;
 	}
@@ -65,10 +65,10 @@ public class OAuthHttpClient {
 		HttpResponse response = null;
 		response = httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			LogWrapper.i(">>", "SC_OK");
+			Log.i(">>", "SC_OK");
 			return EntityUtils.toString(response.getEntity(), "UTF-8");
 		} else {
-			LogWrapper.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
+			Log.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
 		}
 		return null;
 	}
@@ -86,10 +86,10 @@ public class OAuthHttpClient {
 		HttpResponse response = null;
 		response = httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			LogWrapper.i(">>", "SC_OK:");
+			Log.i(">>", "SC_OK:");
 			return EntityUtils.toString(response.getEntity(), "UTF-8");
 		} else {
-			LogWrapper.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
+			Log.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
 		}
 		return null;
 	}
@@ -109,10 +109,10 @@ public class OAuthHttpClient {
 		HttpResponse response = null;
 		response = httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			LogWrapper.i(">>", "SC_OK");
+			Log.i(">>", "SC_OK");
 			return EntityUtils.toString(response.getEntity(), "UTF-8");
 		} else {
-			LogWrapper.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
+			Log.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
 		}
 		return null;
 	}
@@ -139,10 +139,10 @@ public class OAuthHttpClient {
 		HttpResponse response = null;
 		response = httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			LogWrapper.i(">>", "SC_OK");
+			Log.i(">>", "SC_OK");
 			return EntityUtils.toString(response.getEntity(), "UTF-8");
 		} else {
-			LogWrapper.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
+			Log.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
 		}
 		return null;
 	}
@@ -170,10 +170,10 @@ public class OAuthHttpClient {
 		HttpResponse response = null;
 		response = httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			LogWrapper.i(">>", "SC_OK");
+			Log.i(">>", "SC_OK");
 			return EntityUtils.toString(response.getEntity(), "UTF-8");
 		} else {
-			LogWrapper.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
+			Log.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
 		}
 		return null;
 	}
@@ -190,10 +190,10 @@ public class OAuthHttpClient {
 		HttpResponse response = null;
 		response = httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			LogWrapper.i(">>", "SC_OK");
+			Log.i(">>", "SC_OK");
 			return EntityUtils.toString(response.getEntity(), "UTF-8");
 		} else {
-			LogWrapper.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
+			Log.i(">>", "error:" + EntityUtils.toString(response.getEntity()));
 		}
 		return null;
 	}
@@ -253,10 +253,10 @@ public class OAuthHttpClient {
 			result=b.toString();
 		} else if (cah == 400) {
 			result=conn.getResponseMessage();
-			LogWrapper.i(">>", "400:"+conn.getResponseMessage()+",url="+urlStr);
+			Log.i(">>", "400:"+conn.getResponseMessage()+",url="+urlStr);
 		} else {
 			result="404 error!";
-			LogWrapper.i(">>", "404:"+",url="+urlStr);
+			Log.i(">>", "404:"+",url="+urlStr);
 		}
 		conn.disconnect();
 		return result;

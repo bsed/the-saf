@@ -20,7 +20,7 @@ import cn.salesuite.saf.config.SAFConfig;
  */
 public class LogWrapper {
 
-	private static LinkedList<String> content = new LinkedList<String>();
+	private LinkedList<String> content = new LinkedList<String>();
 	
 	private static LogWrapper instance = null;
 	
@@ -34,39 +34,39 @@ public class LogWrapper {
 		return instance;
 	}
 	
-	public static LinkedList<String> getContent() {
+	public LinkedList<String> getContent() {
 		return content;
 	}
 	
-	public static void e(String tag, String msg) {
+	public void e(String tag, String msg) {
 		if (SAFConfig.LOG_LEVEL >= 1) {
 			Log.e(tag, msg);
 			addToList("ERROR: " + tag + " " + msg);
 		}
 	}
 
-	public static void w(String tag, String msg) {
+	public void w(String tag, String msg) {
 		if (SAFConfig.LOG_LEVEL >= 2) {
 			Log.w(tag, msg);
 			addToList("WARN: " + tag + " " + msg);
 		}
 	}
 
-	public static void i(String tag, String msg) {
+	public void i(String tag, String msg) {
 		if (SAFConfig.LOG_LEVEL >= 3) {
 			Log.i(tag, msg);
 			addToList("INFO: " + tag + " " + msg);
 		}
 	}
 	
-	public static void d(String tag, String msg) {
+	public void d(String tag, String msg) {
 		if (SAFConfig.LOG_LEVEL >= 4) {
 			Log.d(tag, msg);
 			addToList("DEBUG: " + tag + " " + msg);
 		}
 	}
 
-	private static void addToList(String msg) {
+	private void addToList(String msg) {
 		content.addFirst(msg);
 		if (content.size() > SAFConfig.LOG_SIZE) {
 			content.removeLast();
