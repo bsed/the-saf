@@ -2,7 +2,7 @@ package cn.salesuite.saf.weibo;
 
 import java.util.HashMap;
 
-import cn.salesuite.saf.log.LogWrapper;
+import android.util.Log;
 
 public class QQOAuthService extends OAuthService {
 
@@ -27,7 +27,7 @@ public class QQOAuthService extends OAuthService {
 		addBodyParams();
 		OAuthToken oauthToken = OAuthConstants.EMPTY_TOKEN;
 		String str = getSignature(mOAuthRequest, oauthToken);
-		LogWrapper.i("signature:",str);
+		Log.i("signature:",str);
 		mOAuthRequest.addBodyParam("oauth_signature", str);
 
 		return mOAuthRequest.getToken();

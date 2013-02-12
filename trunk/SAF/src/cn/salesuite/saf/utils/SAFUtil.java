@@ -90,8 +90,7 @@ public class SAFUtil {
 	public static boolean isAppRunning(Context context, String packageName) {
 		if (packageName == null)
 			return false;
-		// Returns a list of application processes that are running on the
-		// device
+
 		ActivityManager activityManager = (ActivityManager) context
 				.getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningAppProcessInfo> appProcesses = activityManager
@@ -99,15 +98,6 @@ public class SAFUtil {
 		if (appProcesses == null)
 			return false;
 		for (RunningAppProcessInfo appProcess : appProcesses) {
-			// importance:
-			// The relative importance level that the system places
-			// on this process.
-			// May be one of IMPORTANCE_FOREGROUND, IMPORTANCE_VISIBLE,
-			// IMPORTANCE_SERVICE, IMPORTANCE_BACKGROUND, or IMPORTANCE_EMPTY.
-			// These constants are numbered so that "more important" values are
-			// always smaller than "less important" values.
-			// processName:
-			// The name of the process that this object is associated with.
 			if (appProcess.processName.equals(packageName)) {
 				return true;
 			}
