@@ -9,6 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 可注入string、array、color等资源类型
  * @author Tony Shen
  *
  */
