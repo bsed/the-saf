@@ -16,8 +16,9 @@ import android.widget.Toast;
 import cn.salesuite.saf.config.SAFConstant;
 import cn.salesuite.saf.location.CellIDInfo;
 import cn.salesuite.saf.location.CellIDInfoManager;
+import cn.salesuite.saf.location.ILocation;
 import cn.salesuite.saf.location.LocationManager;
-import cn.salesuite.saf.location.activity.LocationActivity;
+import cn.salesuite.saf.location.Position;
 import cn.salesuite.saf.utils.SAFUtil;
 
 /**
@@ -29,12 +30,14 @@ import cn.salesuite.saf.utils.SAFUtil;
  * @author Tony Shen
  *
  */
-public class SAFActivity extends LocationActivity{
-
+public class SAFActivity extends Activity implements ILocation{
+	
 	public static SAFApp app;
 	public String TAG;
 	public int networkType;
 	public String networkName;
+	public LocationManager mLocationManager=null;
+	public static Position lastSavedPosition = null;
 	
 	private Handler mdBmHandler = new Handler(Looper.getMainLooper());
 	private Runnable mGetdBmRunnable = new Runnable() {

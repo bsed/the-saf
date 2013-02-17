@@ -2,10 +2,10 @@ package cn.salesuite.saf.location;
 
 import java.util.ArrayList;
 
-import cn.salesuite.saf.location.activity.LocationActivity;
-
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 public class LocationManager implements LocationHelper.LocationListener{
@@ -22,7 +22,7 @@ public class LocationManager implements LocationHelper.LocationListener{
 	
 	private static LocationManager lmInstance = null;
 	private static LocationHelper locationHelper = null;
-	private ArrayList<LocationActivity> activities = new ArrayList<LocationActivity>();
+	private ArrayList<ILocation> activities = new ArrayList<ILocation>();
 	private Location lastLocation = null;
 	
 	public static final String SKYHOOK_HANDLER = "Skyhook";
@@ -43,15 +43,29 @@ public class LocationManager implements LocationHelper.LocationListener{
 		return lmInstance;
 	}
 	
-	public void register(LocationActivity activity){
+	public void register(ILocation object){
+		Activity act = null;
+
+		if (object instanceof Activity) {
+			act = (Activity)object;
+		} else if (object instanceof Fragment) {
+			act = ((Fragment)object).getActivity();
+		} else {
+			return;
+		}
+		
+		if (act==null) {
+			return;
+		}
+		
 	    if(locationHelper==null){
-	    	Context context = activity.getApplicationContext();
+	    	Context context = act.getApplicationContext();
 			locationHelper = new LocationHelper(context,locationHandler);
 			locationHelper.registerLocationListener(lmInstance);
 		}
-		activities.add(activity);
+		activities.add(object);
 		if(locationHelper.getContext() == null){
-			Context context = activity.getApplicationContext();
+			Context context = act.getApplicationContext();
 			locationHelper.setContext(context);
 			if(locationHelper.status == LocationHelper.STOPPED){
 				locationHelper.start();
@@ -59,9 +73,22 @@ public class LocationManager implements LocationHelper.LocationListener{
 		}
 	}
 	
-	public void unregister(LocationActivity activity){
-		if(activities.contains(activity)){
-			activities.remove(activity);
+	public void unregister(ILocation object){
+		Activity act = null;
+		if (object instanceof Activity) {
+			act = (Activity)object;
+		} else if (object instanceof Fragment) {
+			act = ((Fragment)object).getActivity();
+		} else {
+			return;
+		}
+		
+		if (act==null) {
+			return;
+		}
+		
+		if(activities.contains(act)){
+			activities.remove(act);
 		}
 		if(activities.size()==0){
 		    locationHelper.stop();
@@ -78,7 +105,7 @@ public class LocationManager implements LocationHelper.LocationListener{
 		location.setLatitude(pos.getLat());
 		location.setLongitude(pos.getLon());
 		lastLocation = location;
-		for(LocationActivity activity : activities){
+		for(ILocation activity : activities){
 			activity.onLocationChanged(location);
 		}
 	}
