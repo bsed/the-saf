@@ -13,12 +13,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import cn.salesuite.saf.config.SAFConstant;
 import cn.salesuite.saf.imagecache.ImageLoader;
 
@@ -39,9 +35,9 @@ public class SAFApp extends Application {
 	public List<Activity> activityManager;
 
 	public String deviceid;  // 设备ID
-	public String osVersion; // 系统版本
+	public String osVersion; // 操作系统版本
 	public String mobileType;// 手机型号
-	public String version;   // 应用的versionName
+	public String version;   // app的versionName
 	public String citycode;  // 城市代码
 
 	public ImageLoader imageLoader;
@@ -80,51 +76,17 @@ public class SAFApp extends Application {
 	}
 
 	/**
-	 * 获取手机的设备号或者wifi的mac号，在wifi环境下只返回mac地址，否则返回手机设备号<br>
-	 * 在模拟器情况下会返回null
+	 * 获取手机的设备号（imei）
 	 * 
 	 * @return
 	 */
 	private String getDeviceId() {
-		WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		WifiInfo wifiInfo = manager.getConnectionInfo();
-		String macAddress = wifiInfo.getMacAddress();
-		if (macAddress != null) {
-			Log.d("requestCount", "mac:" + macAddress);
-			return macAddress.replace(".", "").replace(":", "")
-					.replace("-", "").replace("_", "");
-		} else {
-			TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-			String imei = tm.getDeviceId();
-			// no sim: sdk|any pad
-			if (imei != null && !SAFConstant.SPECIAL_IMEI.equals(imei)) {
-				Log.d("requestCount", "imei:" + imei);
-				return imei;
-			} else {
-				String deviceId = Secure.getString(getContentResolver(),
-						Secure.ANDROID_ID);
-				// sdk: android_id
-				if (deviceId != null
-						&& !SAFConstant.SPECIAL_ANDROID_ID.equals(deviceId)) {
-					Log.d("requestCount", "ANDROID_ID:" + deviceId);
-					return deviceId;
-				}
-				// else {
-				// SharedPreferences sp = this.getSharedPreferences(
-				// SAFConstant.SHARED, Activity.MODE_PRIVATE);
-				// String uid = sp.getString("uid", null);
-				// if (uid == null) {
-				// SharedPreferences.Editor editor = sp.edit();
-				// uid=UUID.randomUUID().toString().replace("-", "");
-				// editor.putString("uid",uid );
-				// editor.commit();
-				// }
-				// Log.d("requestCount", "uid:" + uid);
-				// return uid;
-				// }
-				return null;
-			}
+		TelephonyManager mphonemanger = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		String imei = SAFConstant.SPECIAL_IMEI;
+		if (mphonemanger != null) {
+			imei = mphonemanger.getDeviceId();
 		}
+		return imei;
 	}
 
 	public static SAFApp getInstance() {
