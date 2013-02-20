@@ -44,6 +44,7 @@ public class SAFApp extends Application {
 	private static SAFApp instance;
 	
 	private int defaultImageId;
+	private String fileDir;
 
 	/**
 	 * @see android.app.Application#onCreate()
@@ -59,7 +60,11 @@ public class SAFApp extends Application {
 
 		session = new HashMap<String, Object>();
 		activityManager = new ArrayList<Activity>();
-		imageLoader = new ImageLoader(instance,defaultImageId);// 使用ImageLoader组件时,必须设置defaultImageId,如有需要可覆盖SAFConfig中DIR的值
+		if (fileDir!=null) {
+			imageLoader = new ImageLoader(instance,defaultImageId,fileDir);// 使用ImageLoader组件时,设置defaultImageId、fileDir
+		} else {
+			imageLoader = new ImageLoader(instance,defaultImageId);        // 使用ImageLoader组件时,设置defaultImageId
+		}
 
 		PackageManager manager = this.getPackageManager();
 		try {
@@ -105,5 +110,13 @@ public class SAFApp extends Application {
 	 */
 	public void setDefaultImageId(int defaultImageId) {
 		this.defaultImageId = defaultImageId;
+	}
+
+	/**
+	 * 子类继承时,可使用自己的默认文件路径存放图片
+	 * @param fileDir
+	 */
+	public void setFileDir(String fileDir) {
+		this.fileDir = fileDir;
 	}
 }

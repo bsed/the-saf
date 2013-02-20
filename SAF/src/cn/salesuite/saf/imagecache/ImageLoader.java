@@ -45,6 +45,13 @@ public class ImageLoader {
         stub_id = default_img_id;
     }
     
+    public ImageLoader(Context context,int default_img_id,String fileDir){
+    	memoryCache = new MemoryCache();
+        fileCache = new FileCache(context,fileDir);
+        executorService = Executors.newFixedThreadPool(5);
+        stub_id = default_img_id;
+    }
+    
     /**
      * 显示图片，如果未能获取图片，则显示全局的默认图片
      * @param url
