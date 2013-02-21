@@ -14,7 +14,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
  * 通过反射获取资源文件的帮助类<br>
  * 使用方法，可现在app的引导页面中使用如下的语句:<br>
  * <code>
- * ResourceUtil.GEN_PACKAGE_NAME = ResourceUtil.getPackageName(contex);
+ * ResourceUtil.GEN_PACKAGE_NAME = ResourceUtil.getPackageName(contex)+".R";
  * </code>
  * <br>
  * 然后就可以使用了
