@@ -332,4 +332,40 @@ public class StringHelper {
 		Pattern pattern = Pattern.compile("^[-\\+]?[.\\d]*$"); 
 		return pattern.matcher(str).matches();
 	}
+	
+    public static boolean isNumber(String str) {
+        if (isLong(str)) {
+            return true;
+        }
+        Pattern pattern = Pattern.compile("(-)?(\\d*)\\.{0,1}(\\d*)");
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
+    }
+    
+    public static boolean isLong(String str) {
+        if ("0".equals(str.trim())) {
+            return true;
+        }
+        Pattern pattern = Pattern.compile("^[^0]\\d*");
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isFloat(String str) {
+        if (isLong(str)) {
+            return true;
+        }
+        Pattern pattern = Pattern.compile("\\d*\\.{1}\\d+");
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
+    }
 }
