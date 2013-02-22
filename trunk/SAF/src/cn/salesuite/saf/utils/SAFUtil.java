@@ -29,6 +29,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 /**
  * SAF的工具类
@@ -310,4 +312,14 @@ public class SAFUtil {
     	long cId = Thread.currentThread().getId();
     	return uiId == cId;	
     }
+
+	/**
+	 * 关闭虚拟键盘
+	 * @param context
+	 * @param view
+	 */
+	public static void hideSoftInputFromWindow(Context context,View view) {
+		InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);  
+	}
 }
