@@ -8,16 +8,6 @@ package cn.salesuite.saf.config;
  *
  */
 public class SAFConfig {
-
-	/**
-	 * Set Log level
-	 * 0: no log
-	 * 1: error
-	 * 2: warn
-	 * 3: info
-	 * 4: debug
-	 */
-	public static int LOG_LEVEL=4; 
 		
 	/**
 	 * number of messages should be saved in log
