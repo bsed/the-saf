@@ -41,14 +41,14 @@ public class ImageLoader {
     public ImageLoader(Context context,int default_img_id){
     	memoryCache = new MemoryCache();
         fileCache = new FileCache(context);
-        executorService = Executors.newFixedThreadPool(10);
+        executorService = Executors.newFixedThreadPool(8);
         stub_id = default_img_id;
     }
     
     public ImageLoader(Context context,int default_img_id,String fileDir){
     	memoryCache = new MemoryCache();
         fileCache = new FileCache(context,fileDir);
-        executorService = Executors.newFixedThreadPool(10);
+        executorService = Executors.newFixedThreadPool(8);
         stub_id = default_img_id;
     }
     
