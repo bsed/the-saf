@@ -363,4 +363,15 @@ public class DateHelper {
         }
         return year % 4==0;
     }
+    
+    /**
+     * 日期字符串转换成Calendar
+     * @param strDate
+     * @return
+     */
+    public static Calendar string2Calendar(String strDate) {
+    	Calendar cal=Calendar.getInstance();
+    	cal.setTime(parseDate(strDate));
+    	return cal;
+    }
 }
