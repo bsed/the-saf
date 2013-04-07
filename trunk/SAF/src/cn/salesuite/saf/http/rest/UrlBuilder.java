@@ -12,7 +12,7 @@ import java.util.Map;
  * 构造url的builder，用法:
  * <pre>
  * <code>
- * RestBuilder builder = new RestBuilder("http://localhost:8080/test");
+ * UrlBuilder builder = new UrlBuilder("http://localhost:8080/test");
  * builder.parameter("one", "one");
  * builder.parameter("two", "two");
  * String url = builder.buildUrl();
@@ -21,13 +21,13 @@ import java.util.Map;
  * @author Tony
  *
  */
-public class RestBuilder {
+public class UrlBuilder {
 
     private final String urlFormat;
 
     private Map<String, String> parametersMap = new HashMap<String, String>();
 
-    public RestBuilder(String urlFormat) {
+    public UrlBuilder(String urlFormat) {
 		this.urlFormat = urlFormat;
 	}
     
@@ -38,7 +38,7 @@ public class RestBuilder {
 	 * @param value Value.
 	 * @return Current instance for builder pattern.
 	 */
-    public RestBuilder parameter(String name, String value) {
+    public UrlBuilder parameter(String name, String value) {
     	return this.parameter(name, value, true);
 	}
 
@@ -50,9 +50,9 @@ public class RestBuilder {
 	 * @param escape Whether the value needs to be escaped.
 	 * @return Current instance for builder pattern.
 	 */
-    public RestBuilder parameter(String name, String value, boolean escape) {
+    public UrlBuilder parameter(String name, String value, boolean escape) {
     	if (escape) {
-    		this.parametersMap.put(name, RestBuilder.encodeUrl(value));
+    		this.parametersMap.put(name, UrlBuilder.encodeUrl(value));
     	} else {
     		this.parametersMap.put(name, value);
     	}
@@ -67,7 +67,7 @@ public class RestBuilder {
 	 * @param value Value.
 	 * @return Current instance for builder pattern.
 	 */
-    public RestBuilder parameter(String name, int value) {
+    public UrlBuilder parameter(String name, int value) {
 		return this.parameter(name, Integer.toString(value));
 	}
 
@@ -78,11 +78,11 @@ public class RestBuilder {
 	 * @param value Value.
 	 * @return Current instance for builder pattern.
 	 */
-    public RestBuilder parameter(String name, boolean value) {
+    public UrlBuilder parameter(String name, boolean value) {
 		return this.parameter(name, Boolean.toString(value));
 	}
     
-    public RestBuilder parameter(Map<String, String> map) {
+    public UrlBuilder parameter(Map<String, String> map) {
     	parametersMap.putAll(map);
     	return this;
     }
