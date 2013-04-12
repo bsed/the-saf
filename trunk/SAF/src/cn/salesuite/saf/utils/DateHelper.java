@@ -374,4 +374,57 @@ public class DateHelper {
     	cal.setTime(parseDate(strDate));
     	return cal;
     }
+    
+    /**
+	 * 比较src 是否在 dest 之前,true 代表src 小于dest 日期
+	 * @param src 源日期
+	 * @param dest 目标日期
+	 * @param unit 单位 
+	 * 0：年
+	 * 1：月
+	 * 2：日
+	 * 3：时
+	 * 4：分
+	 * 如果比较分:包含以上值，是包含关系
+	 */
+	public static boolean compareIsBefore(Date src, Date dest,int unit){
+		if(src == null || dest == null){
+			return false;
+		}
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHss");
+		String srcStr = format.format(src);
+		String destStr = format.format(dest);
+		boolean result = false;
+		switch(unit){
+			case 0:
+				if(Long.parseLong(srcStr.substring(0,4)) < Long.parseLong(destStr.substring(0,4))){
+					result = true;
+				}
+				break;
+			case 1:
+				if(Long.parseLong(srcStr.substring(0,6)) < Long.parseLong(destStr.substring(0,6))){
+					result = true;
+				}
+				break;
+			case 2:
+				if(Long.parseLong(srcStr.substring(0,8)) < Long.parseLong(destStr.substring(0,8))){
+					result = true;
+				}
+				break;
+			case 3:
+				if(Long.parseLong(srcStr.substring(0,10)) < Long.parseLong(destStr.substring(0,10))){
+					result = true;
+				}
+				break;
+			case 4:
+				if(Long.parseLong(srcStr.substring(0,12)) < Long.parseLong(destStr.substring(0,12))){
+					result = true;
+				}
+				break;
+			default:
+				result = false;
+		}
+		
+		return result;
+	}
 }
