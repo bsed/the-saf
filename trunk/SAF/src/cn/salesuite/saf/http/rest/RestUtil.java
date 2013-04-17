@@ -32,7 +32,7 @@ public class RestUtil {
 	 * @return
 	 * @throws IOException
 	 */
-    public <T> T parseAs(Class<T> cls,String body) throws IOException {
+    public static <T> T parseAs(Class<T> cls,String body) throws IOException {
     	return JSON.parseObject(body, cls);
     }
 }

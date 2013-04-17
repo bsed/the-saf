@@ -304,6 +304,14 @@ public class DateHelper {
 		return another;
 	}
 	
+	public static Date addMonth(Date original, int month){
+		if(original==null) return null;
+		Calendar calender = Calendar.getInstance();
+        calender.setTime(original);
+        calender.add(Calendar.MONTH, month);
+		return calender.getTime();
+	}
+	
 	public static boolean isTomorrow(Date date) {
 		if(date==null) return false;
 		if(formatDate(addTime(new Date(), 1, 0, 0, 0)).equals(formatDate(date))) return true;
@@ -427,4 +435,15 @@ public class DateHelper {
 		
 		return result;
 	}
+	
+    public static String getWeek(Date date){
+        String[] weeks = {"周日","周一","周二","周三","周四","周五","周六"};
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int week_index = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if(week_index<0){
+            week_index = 0;
+        }
+        return weeks[week_index];
+    }
 }
