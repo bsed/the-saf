@@ -1,8 +1,9 @@
 /**
  * 
  */
-package cn.salesuite.saf.utils;
+package cn.salesuite.saf.view;
 
+import cn.salesuite.saf.utils.SAFUtil;
 import android.app.AlertDialog;
 import android.content.Context;
 
