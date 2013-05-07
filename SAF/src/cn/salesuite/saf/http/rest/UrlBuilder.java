@@ -18,17 +18,37 @@ import java.util.Map;
  * String url = builder.buildUrl();
  * </code>
  * </pre>
+ * <pre>
+ * <code>
+ * UrlBuilder builder = new UrlBuilder("http://localhost:8080/test.json?apiVersion=1.0");
+ * builder.parameter("one", "one");
+ * builder.parameter("two", "two");
+ * String url = builder.buildUrl();
+ * </code>
+ * </pre>
  * @author Tony
  *
  */
 public class UrlBuilder {
 
     private final String urlFormat;
-
     private Map<String, String> parametersMap = new HashMap<String, String>();
-
+    private boolean firstParameter = true;
+    
     public UrlBuilder(String urlFormat) {
 		this.urlFormat = urlFormat;
+		int index = urlFormat.indexOf("?");
+		if(index!=-1) {
+			String parameter = urlFormat.substring(index+1);
+			String[] params = parameter.split("&");  
+	        for (int i = 0; i < params.length; i++) {  
+	            String[] p = params[i].split("=");  
+	            if (p.length == 2) {
+	    			firstParameter = false;
+	    			break;
+	            }  
+	        }
+		}
 	}
     
 	/**
@@ -104,10 +124,8 @@ public class UrlBuilder {
 	 */
     public String buildUrl() {
 		StringBuilder urlBuilder = new StringBuilder();
-		boolean firstParameter = true;
-
 		urlBuilder.append(this.urlFormat);
-
+		
 		if (this.parametersMap.size() > 0) {
 			for (String parameterName : this.parametersMap.keySet()) {
 				if (firstParameter) {
