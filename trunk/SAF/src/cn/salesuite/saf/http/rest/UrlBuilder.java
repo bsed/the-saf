@@ -26,6 +26,14 @@ import java.util.Map;
  * String url = builder.buildUrl();
  * </code>
  * </pre>
+ * <pre>
+ * <code>
+ * UrlBuilder builder = new UrlBuilder("http://localhost:8080/test.json?apiVersion=1.0&");
+ * builder.parameter("one", "one");
+ * builder.parameter("two", "two");
+ * String url = builder.buildUrl();
+ * </code>
+ * </pre>
  * @author Tony
  *
  */
@@ -125,6 +133,9 @@ public class UrlBuilder {
     public String buildUrl() {
 		StringBuilder urlBuilder = new StringBuilder();
 		urlBuilder.append(this.urlFormat);
+		if (urlFormat.endsWith("&")) {
+			urlBuilder.deleteCharAt(urlBuilder.length()-1);
+		}
 		
 		if (this.parametersMap.size() > 0) {
 			for (String parameterName : this.parametersMap.keySet()) {
