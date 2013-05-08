@@ -35,7 +35,14 @@ import java.util.zip.GZIPInputStream;
  * String body = request.body();
  * </code>
  * </pre>
- * 
+ * 使用gzip压缩的方法：
+ * <pre>
+ * <code>
+ * RestClient request = RestClient.get(url);
+ * request.acceptGzipEncoding().uncompress(true);
+ * String body = request.body();
+ * </code>
+ * </pre>
  * @author Tony
  * 
  */
@@ -122,6 +129,16 @@ public class RestClient {
 	 */
 	public BufferedInputStream buffer() throws RestException {
 		return new BufferedInputStream(stream(), bufferSize);
+	}
+
+	/**
+	 * 返回response body的是否自动压缩
+	 * @param uncompress
+	 * @return
+	 */
+	public RestClient uncompress(final boolean uncompress) {
+		this.uncompress = uncompress;
+		return this;
 	}
 
 	/**
@@ -259,6 +276,25 @@ public class RestClient {
 	 */
 	public RestClient acceptJson() {
 		return accept(RestConstant.CONTENT_TYPE_JSON);
+	}
+	
+	/**
+	 * 设置header中Accept-Encoding的值为gzip
+	 * 
+	 * @return RestClient
+	 */
+	public RestClient acceptGzipEncoding() {
+		return acceptEncoding(RestConstant.ENCODING_GZIP);
+	}
+	
+	/**
+	 * 设置header中Accept-Encoding的值
+	 * 
+	 * @param value
+	 * @return RestClient
+	 */
+	public RestClient acceptEncoding(final String value) {
+		return header(RestConstant.HEADER_ACCEPT_ENCODING, value);
 	}
 
 	/**
