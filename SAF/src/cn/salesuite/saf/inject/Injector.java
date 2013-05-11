@@ -15,10 +15,11 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import cn.salesuite.saf.inject.annotation.InjectResource;
+import cn.salesuite.saf.inject.annotation.InjectSystemService;
 import cn.salesuite.saf.inject.annotation.InjectView;
 
 /**
- * 注入view、resource到Activity<br>
+ * 注入view、resource、systemservice到Activity<br>
  * 在Activity中使用注解，首先需要使用Injector.injectInto(this);
  * @author Tony Shen
  *
@@ -79,6 +80,10 @@ public class Injector {
                 } else if (annotation.annotationType() == InjectResource.class) {
                     Object ressource = findResource(field.getType(), field, (InjectResource) annotation);
                     injectIntoField(field, ressource);
+                } else if (annotation.annotationType() == InjectSystemService.class) {
+                	String serviceName = ((InjectSystemService) annotation).value();
+                	Object service = context.getSystemService(serviceName);
+                    injectIntoField(field, service);
                 }
             }
         }
