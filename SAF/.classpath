@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/annotations.jar"/>
 	<classpathentry kind="lib" path="lib/android-support-v4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/disklrucache-2.0.2-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -3,14 +3,6 @@
  */
 package cn.salesuite.saf.imagecache;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -19,10 +11,9 @@ import java.util.concurrent.Executors;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
-import cn.salesuite.saf.utils.IOUtil;
 
 /**
  * @author Tony Shen
@@ -32,24 +23,27 @@ import cn.salesuite.saf.utils.IOUtil;
 public class ImageLoader {
 	
 	MemoryCache memoryCache;
-    FileCache fileCache;
+	DiskLruImageCache diskCache;
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService;
     int stub_id;
     Handler handler=new Handler();
+    private Context mContext;
     
     public ImageLoader(Context context,int default_img_id){
     	memoryCache = new MemoryCache();
-        fileCache = new FileCache(context);
+    	diskCache = new DiskLruImageCache(context);
         executorService = Executors.newFixedThreadPool(8);
         stub_id = default_img_id;
+        this.mContext = context;
     }
     
     public ImageLoader(Context context,int default_img_id,String fileDir){
     	memoryCache = new MemoryCache();
-        fileCache = new FileCache(context,fileDir);
+    	diskCache = new DiskLruImageCache(context,fileDir);
         executorService = Executors.newFixedThreadPool(8);
         stub_id = default_img_id;
+        this.mContext = context;
     }
     
     /**
@@ -95,61 +89,52 @@ public class ImageLoader {
         executorService.submit(new PhotosLoader(p));
     }
     
-    public Bitmap getBitmap(String url) {
-        File f=fileCache.getFile(url);
-        
+    public Bitmap getBitmap(String url,ImageView imageView) {
         //from SD cache
-        Bitmap b = decodeFile(f);
+        Bitmap b = getBitmapFromDiskCache(url);
         if(b!=null)
             return b;
         
         //from web
-        try {
-            Bitmap bitmap=null;
-            URL imageUrl = new URL(url);
-            HttpURLConnection conn = (HttpURLConnection)imageUrl.openConnection();
-            conn.setConnectTimeout(30000);
-            conn.setReadTimeout(30000);
-            conn.setInstanceFollowRedirects(true);
-            InputStream is=conn.getInputStream();
-            OutputStream os = new FileOutputStream(f);
-            IOUtil.copyStream(is, os);
-            os.close();
-            bitmap = decodeFile(f);
-            return bitmap;
-        } catch (Throwable ex){
-           ex.printStackTrace();
-           if(ex instanceof OutOfMemoryError)
-               memoryCache.clear();
-           return null;
-        }
+        downloadBitmap(url,new JobOptions(imageView));
+        return memoryCache.get(url);
+    }
+    
+    private Bitmap getBitmapFromDiskCache(final String urlString) {
+        final String key = getDiskCacheKey(urlString);
+        final Bitmap cachedBitmap = diskCache.getBitmap(key);
+
+        if (cachedBitmap == null)
+            return null;
+
+        return cachedBitmap;
     }
 
-    //decodes image and scales it to reduce memory consumption
-    private Bitmap decodeFile(File f){
-        try {
-            //decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(new FileInputStream(f),null,o);
+    private static String getDiskCacheKey(final String urlString) {
+        final String sanitizedKey = urlString.replaceAll("[^a-z0-9_]", "");
+        return sanitizedKey.substring(0, Math.min(63, sanitizedKey.length()));
+    }
+    
+    private void downloadBitmap(final String urlString, final JobOptions options) {
+        final BitmapProcessor processor = new BitmapProcessor(mContext);
+        final Bitmap bitmap = processor.decodeSampledBitmapFromUrl(urlString, options.requestedWidth, options.requestedHeight);
 
-            final int REQUIRED_SIZE=70;
-            int width_tmp=o.outWidth, height_tmp=o.outHeight;
-            int scale=1;
-            while(true){
-                if(width_tmp/2<REQUIRED_SIZE || height_tmp/2<REQUIRED_SIZE)
-                    break;
-                width_tmp/=2;
-                height_tmp/=2;
-                scale+=1;
-            }
-            
-            //decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize=scale;
-            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-        } catch (FileNotFoundException e) {}
-        return null;
+        if (bitmap == null) {
+            Log.e("ImageLoader", "download Drawable got null");
+            return;
+        }
+
+        addBitmapToCache(urlString, bitmap);
+    }
+    
+    private void addBitmapToCache(final String key, final Bitmap bitmap) {
+        memoryCache.put(key, bitmap);
+
+        final String diskCacheKey = getDiskCacheKey(key);
+
+        if ((diskCache != null) && !diskCache.containsKey(diskCacheKey)) {
+            diskCache.put(diskCacheKey, bitmap);
+        }
     }
     
     //Task for the queue
@@ -181,7 +166,7 @@ public class ImageLoader {
         public void run() {
             if(imageViewReused(photoToLoad))
                 return;
-            Bitmap bmp=getBitmap(photoToLoad.url);
+            Bitmap bmp=getBitmap(photoToLoad.url,photoToLoad.imageView);
             memoryCache.put(photoToLoad.url, bmp);
             if(imageViewReused(photoToLoad))
                 return;
@@ -216,13 +201,35 @@ public class ImageLoader {
                 photoToLoad.imageView.setImageResource(photoToLoad.imageId);
         }
     }
+    
+    public static class JobOptions {
+
+        public boolean roundedCorners = false;
+        public boolean fadeIn = true;
+        public int cornerRadius = 5;
+        public int requestedWidth;
+        public int requestedHeight;
+
+        public JobOptions() {
+            this(0, 0);
+        }
+
+        public JobOptions(final ImageView imgView) {
+            this(imgView.getWidth(), imgView.getHeight());
+        }
+
+        public JobOptions(final int requestedWidth, final int requestedHeight) {
+            this.requestedWidth = requestedWidth;
+            this.requestedHeight = requestedHeight;
+        }
+    }
 
     /**
      * 清空所有缓存
      */
     public void clearCache() {
         memoryCache.clear();
-        fileCache.clear();
+        diskCache.clearCache();
     }
     
     /**
