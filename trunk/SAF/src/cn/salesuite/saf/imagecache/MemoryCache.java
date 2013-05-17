@@ -3,14 +3,12 @@
  */
 package cn.salesuite.saf.imagecache;
 
-import java.util.Collections;
-import java.util.Iterator;
+import java.lang.ref.SoftReference;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import android.graphics.Bitmap;
-import android.util.Log;
+import android.support.v4.util.LruCache;
 
 /**
  * @author Tony Shen
@@ -18,78 +16,98 @@ import android.util.Log;
  * 
  */
 public class MemoryCache {
-	 private static final String TAG = "MemoryCache";
-	 private Map<String, Bitmap> cache=Collections.synchronizedMap(
-	            new LinkedHashMap<String, Bitmap>(10,1.5f,true)); //最后一个参数为true表示使用LRU的顺序
-	 private long size=0;       
-	 private long limit=1000000;//max memory in bytes
+	private static final String TAG = "MemoryCache";
+	 
+	/**
+	 * 从内存读取数据速度是最快的，为了更大限度使用内存，这里使用了两层缓存。 硬引用缓存不会轻易被回收，用来保存常用数据，不常用的转入软引用缓存。
+	 */
+	private static final int SOFT_CACHE_SIZE = 15; // 软引用缓存容量
+	private static LruCache<String, Bitmap> mLruCache; // 硬引用缓存
+	private static LinkedHashMap<String, SoftReference<Bitmap>> mSoftCache; // 软引用缓存
 
 	public MemoryCache() {
-		// 使用heap中可用的25%
-		setLimit(Runtime.getRuntime().maxMemory() / 4);
-	}
-
-	public void setLimit(long new_limit) {
-		limit = new_limit;
-		Log.i(TAG, "MemoryCache will use up to " + limit / 1024. / 1024. + "MB");
-	}
-	
-	public boolean containsKey(String url) {
-		return cache.containsKey(url)?true:false;
-	}
-
-	public Bitmap get(String id) {
-		try {
-			if (!cache.containsKey(id))
-				return null;
-			// NullPointerException sometimes happen here http://code.google.com/p/osmdroid/issues/detail?id=78
-			return cache.get(id);
-		} catch (NullPointerException ex) {
-			ex.printStackTrace();
-			return null;
-		}
-	}
-
-	public void put(String id, Bitmap bitmap) {
-		try {
-			if (cache.containsKey(id))
-				size -= getSizeInBytes(cache.get(id));
-			cache.put(id, bitmap);
-			size += getSizeInBytes(bitmap);
-			checkSize();
-		} catch (Throwable th) {
-			th.printStackTrace();
-		}
-	}
-	    
-	private void checkSize() {
-		Log.i(TAG, "cache size=" + size + " length=" + cache.size());
-		if (size > limit) {
-			Iterator<Entry<String, Bitmap>> iter = cache.entrySet().iterator();//least recently accessed item will be the first one iterated
-			while (iter.hasNext()) {
-				Entry<String, Bitmap> entry = iter.next();
-				size -= getSizeInBytes(entry.getValue());
-				iter.remove();
-				if (size <= limit)
-					break;
+		int cacheSize = (int)Runtime.getRuntime().maxMemory() / 4;
+		mLruCache = new LruCache<String, Bitmap>(cacheSize) {
+			@Override
+			protected int sizeOf(String key, Bitmap value) {
+				if (value != null)
+					return value.getRowBytes() * value.getHeight();
+				else
+					return 0;
 			}
-			Log.i(TAG, "Clean cache. New size " + cache.size());
+
+			@Override
+			protected void entryRemoved(boolean evicted, String key,
+					Bitmap oldValue, Bitmap newValue) {
+				if (oldValue != null)
+					// 硬引用缓存容量满的时候，会根据LRU算法把最近没有被使用的图片转入此软引用缓存
+					mSoftCache.put(key, new SoftReference<Bitmap>(oldValue));
+			}
+		};
+		mSoftCache = new LinkedHashMap<String, SoftReference<Bitmap>>(
+				SOFT_CACHE_SIZE, 0.75f, true) {
+			private static final long serialVersionUID = 6040103833179403725L;
+
+			@Override
+			protected boolean removeEldestEntry(
+					Entry<String, SoftReference<Bitmap>> eldest) {
+				if (size() > SOFT_CACHE_SIZE) {
+					return true;
+				}
+				return false;
+			}
+		};
+	}
+
+	/**
+	 * 从缓存中获取图片
+	 */
+	public Bitmap get(String url) {
+		Bitmap bitmap;
+		// 先从硬引用缓存中获取
+		synchronized (mLruCache) {
+			bitmap = mLruCache.get(url);
+			if (bitmap != null) {
+				// 如果找到的话，把元素移到LinkedHashMap的最前面，从而保证在LRU算法中是最后被删除
+				mLruCache.remove(url);
+				mLruCache.put(url, bitmap);
+				return bitmap;
+			}
+		}
+		// 如果硬引用缓存中找不到，到软引用缓存中找
+		synchronized (mSoftCache) {
+			SoftReference<Bitmap> bitmapReference = mSoftCache.get(url);
+			if (bitmapReference != null) {
+				bitmap = bitmapReference.get();
+				if (bitmap != null) {
+					// 将图片移回硬缓存
+					mLruCache.put(url, bitmap);
+					mSoftCache.remove(url);
+					return bitmap;
+				} else {
+					mSoftCache.remove(url);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 添加图片到缓存
+	 */
+	public void put(String url, Bitmap bitmap) {
+		if (bitmap != null) {
+			synchronized (mLruCache) {
+				mLruCache.put(url, bitmap);
+			}
 		}
 	}
 
+	/**
+	 * 清空lrucache和软引用缓存
+	 */
 	public void clear() {
-		try {
-			// NullPointerException sometimes happen here http://code.google.com/p/osmdroid/issues/detail?id=78
-			cache.clear();
-			size = 0;
-		} catch (NullPointerException ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	long getSizeInBytes(Bitmap bitmap) {
-		if (bitmap == null)
-			return 0;
-		return bitmap.getRowBytes() * bitmap.getHeight();
+		mLruCache.evictAll();
+		mSoftCache.clear();
 	}
 }
