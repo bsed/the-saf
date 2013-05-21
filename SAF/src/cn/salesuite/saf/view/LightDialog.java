@@ -16,7 +16,7 @@ import android.content.Context;
  * dialog.show();
  * </code>
  * </pre>
- * @author Tony
+ * @author Tony Shen
  *
  */
 public class LightDialog extends AlertDialog{
