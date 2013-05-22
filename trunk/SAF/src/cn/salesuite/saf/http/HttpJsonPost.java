@@ -14,6 +14,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 
 import android.util.Log;
 
@@ -57,8 +58,10 @@ public class HttpJsonPost extends HttpJsonClient{
 		customizedHeader.put("Accept" , "application/json");
 		
 		HttpPost httpRequest = createHttpPost(url, customizedHeader);
-		if (entity!=null)
+		if (entity!=null) {
+			Log.i(TAG,"post body="+EntityUtils.toString(entity));
 			httpRequest.setEntity(entity);
+		}
 		HttpResponse httpResponse = executeHttpRequest(httpRequest);
 		HttpEntity httpEntity = httpResponse.getEntity();
 		
