@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 
 /**
  * 订阅者的方法，封装了Method和ThreadMode
- * @author Tony
+ * @author Tony Shen
  *
  */
 final class SubscriberMethod {

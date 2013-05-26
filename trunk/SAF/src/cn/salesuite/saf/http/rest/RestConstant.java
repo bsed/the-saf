@@ -4,7 +4,7 @@
 package cn.salesuite.saf.http.rest;
 
 /**
- * @author Tony
+ * @author Tony Shen
  * 
  */
 public class RestConstant {

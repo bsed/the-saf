@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 /**
  * 消息的订阅者默认使用ThreadMode.PostThread（在当前的thread运行）
- * @author Tony
+ * @author Tony Shen
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

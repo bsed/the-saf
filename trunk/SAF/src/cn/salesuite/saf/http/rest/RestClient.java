@@ -43,7 +43,7 @@ import java.util.zip.GZIPInputStream;
  * String body = request.body();
  * </code>
  * </pre>
- * @author Tony
+ * @author Tony Shen
  * 
  */
 public class RestClient {

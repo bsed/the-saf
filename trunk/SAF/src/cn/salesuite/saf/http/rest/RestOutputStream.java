@@ -13,7 +13,7 @@ import java.nio.charset.CharsetEncoder;
 
 /**
  * 封装BufferedOutputStream
- * @author Tony
+ * @author Tony Shen
  *
  */
 public class RestOutputStream extends BufferedOutputStream{

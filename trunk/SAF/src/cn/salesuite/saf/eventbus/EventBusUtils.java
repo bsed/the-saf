@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author Tony
+ * @author Tony Shen
  *
  */
 public class EventBusUtils {

@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorCompletionService;
 
 /**
  * 后台线程运行，使用CompletionService，从而无需使用阻塞队列
- * @author Tony
+ * @author Tony Shen
  *
  */
 public class BackgroundPoster {

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 
 /**
- * @author Tony
+ * @author Tony Shen
  *
  */
 public abstract class Operation<V> implements Callable<V> {

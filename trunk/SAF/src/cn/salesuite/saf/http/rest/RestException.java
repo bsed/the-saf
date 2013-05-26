@@ -6,7 +6,7 @@ package cn.salesuite.saf.http.rest;
 import java.io.IOException;
 
 /**
- * @author Tony
+ * @author Tony Shen
  *
  */
 public class RestException extends RuntimeException{

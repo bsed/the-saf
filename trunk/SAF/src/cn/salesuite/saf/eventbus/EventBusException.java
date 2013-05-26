@@ -6,7 +6,7 @@ package cn.salesuite.saf.eventbus;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * @author Tony
+ * @author Tony Shen
  *
  */
 public class EventBusException extends RuntimeException{

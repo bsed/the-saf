@@ -34,7 +34,7 @@ import java.util.Map;
  * String url = builder.buildUrl();
  * </code>
  * </pre>
- * @author Tony
+ * @author Tony Shen
  *
  */
 public class UrlBuilder {
