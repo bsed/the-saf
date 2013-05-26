@@ -8,7 +8,7 @@ import java.io.Flushable;
 import java.io.IOException;
 
 /**
- * @author Tony
+ * @author Tony Shen
  *
  */
 public abstract class CloseOperation<V> extends Operation<V>{

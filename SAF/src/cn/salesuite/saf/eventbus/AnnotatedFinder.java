@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  * 查找注解 @Produce 和 @Subscribe
- * @author Tony
+ * @author Tony Shen
  *
  */
 final class AnnotatedFinder {

@@ -5,7 +5,7 @@ package cn.salesuite.saf.eventbus;
 
 /**
  * EventBus不处理DeadEvent
- * @author Tony
+ * @author Tony Shen
  *
  */
 public class DeadEvent {
