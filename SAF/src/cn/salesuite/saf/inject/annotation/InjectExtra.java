@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注入android的system service</br>
+ * 注入android的extra</br>
  * 使用方法：
  * <pre>
  * <code>
