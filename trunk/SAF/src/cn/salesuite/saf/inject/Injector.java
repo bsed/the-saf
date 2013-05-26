@@ -8,12 +8,15 @@ import java.lang.reflect.Field;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import cn.salesuite.saf.inject.annotation.InjectExtra;
 import cn.salesuite.saf.inject.annotation.InjectResource;
 import cn.salesuite.saf.inject.annotation.InjectSystemService;
 import cn.salesuite.saf.inject.annotation.InjectView;
@@ -33,6 +36,7 @@ public class Injector {
     protected final Activity activity;
     protected final Resources resources;
     protected final Class<?> clazz;
+    private final Bundle extras;
     
     public Injector(Context context) {
         this(context, context);
@@ -47,8 +51,15 @@ public class Injector {
         resources = context.getResources();
         if (context instanceof Activity) {
             activity = (Activity) context;
+            Intent intent = activity.getIntent();
+            if (intent != null) {
+                extras = intent.getExtras();
+            } else {
+                extras = null;
+            }
         } else {
             activity = null;
+            extras = null;
         }
         clazz = target.getClass();
     }
@@ -84,6 +95,11 @@ public class Injector {
                 	String serviceName = ((InjectSystemService) annotation).value();
                 	Object service = context.getSystemService(serviceName);
                     injectIntoField(field, service);
+                } else if (annotation.annotationType() == InjectExtra.class) {
+                    if (extras != null) {
+                        Object value = extras.get(((InjectExtra) annotation).key());
+                        injectIntoField(field, value);
+                    }
                 }
             }
         }
