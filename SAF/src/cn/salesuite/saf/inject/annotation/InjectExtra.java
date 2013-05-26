@@ -13,14 +13,14 @@ import java.lang.annotation.Target;
  * 使用方法：
  * <pre>
  * <code>
- * &#064;InjectSystemService(Context.CONNECTIVITY_SERVICE)
+ * &#064;InjectExtra(key="keyname")
  * </code>
  * </pre>
  * @author Tony Shen
  *
  */
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface InjectSystemService {
-    String value();
+@Target(ElementType.FIELD)
+public @interface InjectExtra {
+	String key();
 }
