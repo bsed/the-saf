@@ -53,6 +53,13 @@ public class SAFApp extends Application {
 	public void onCreate() {
 		super.onCreate();
 		init();
+		
+		// http://code.google.com/p/android/issues/detail?id=20915
+		try {
+			Class.forName("android.os.AsyncTask");
+		} catch (ClassNotFoundException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	public void init() {
