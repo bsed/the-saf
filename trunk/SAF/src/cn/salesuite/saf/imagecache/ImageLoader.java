@@ -6,14 +6,13 @@ package cn.salesuite.saf.imagecache;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
+import cn.salesuite.saf.executor.concurrent.BackgroundExecutor;
 import cn.salesuite.saf.utils.BitmapHelper;
 
 /**
@@ -26,7 +25,7 @@ public class ImageLoader {
 	MemoryCache memoryCache;
 	DiskLruImageCache diskCache;
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
-    ExecutorService executorService;
+    BackgroundExecutor backgroundExecutor;
     int stub_id;
     Handler handler=new Handler();
     private Context mContext;
@@ -34,7 +33,7 @@ public class ImageLoader {
     public ImageLoader(Context context,int default_img_id){
     	memoryCache = new MemoryCache();
     	diskCache = new DiskLruImageCache(context);
-        executorService = Executors.newFixedThreadPool(8);
+    	backgroundExecutor = new BackgroundExecutor(8);
         stub_id = default_img_id;
         this.mContext = context;
     }
@@ -42,7 +41,7 @@ public class ImageLoader {
     public ImageLoader(Context context,int default_img_id,String fileDir){
     	memoryCache = new MemoryCache();
     	diskCache = new DiskLruImageCache(context,fileDir);
-        executorService = Executors.newFixedThreadPool(8);
+    	backgroundExecutor = new BackgroundExecutor(8);
         stub_id = default_img_id;
         this.mContext = context;
     }
@@ -100,18 +99,18 @@ public class ImageLoader {
         
     private void queuePhoto(String url, ImageView imageView) {
         PhotoToLoad p=new PhotoToLoad(url, imageView);
-        executorService.submit(new PhotosLoader(p));
+        backgroundExecutor.submit(new PhotosLoader(p));
     }
     
     private void queuePhoto(String url, ImageView imageView, int imageId) {
         PhotoToLoad p=new PhotoToLoad(url, imageView, imageId);
-        executorService.submit(new PhotosLoader(p));
+        backgroundExecutor.submit(new PhotosLoader(p));
     }
     
     private void queuePhoto(String url, ImageView imageView, int imageId,
 			JobOptions options) {
         PhotoToLoad p=new PhotoToLoad(url, imageView, imageId, options);
-        executorService.submit(new PhotosLoader(p));
+        backgroundExecutor.submit(new PhotosLoader(p));
 	}
     
     public Bitmap getBitmap(String url,ImageView imageView) {
