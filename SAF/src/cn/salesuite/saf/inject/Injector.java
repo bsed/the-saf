@@ -14,9 +14,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import cn.salesuite.saf.inject.annotation.InjectExtra;
+import cn.salesuite.saf.inject.annotation.InjectSupportFragment;
 import cn.salesuite.saf.inject.annotation.InjectResource;
 import cn.salesuite.saf.inject.annotation.InjectSystemService;
 import cn.salesuite.saf.inject.annotation.InjectView;
@@ -100,6 +103,10 @@ public class Injector {
                         Object value = extras.get(((InjectExtra) annotation).key());
                         injectIntoField(field, value);
                     }
+                } else if (annotation.annotationType() == InjectSupportFragment.class) {
+                    int id = ((InjectSupportFragment) annotation).id();
+                    Fragment fragment = findSupportFragment(field, id);
+                    injectIntoField(field, fragment);
                 }
             }
         }
@@ -125,6 +132,27 @@ public class Injector {
             throw new InjectException("View not found for member " + field.getName());
         }
         return view;
+	}
+	
+	/**
+	 * 查找fragment
+	 * @param field
+	 * @param fragmentId
+	 * @return
+	 */
+	private Fragment findSupportFragment(Field field, int fragmentId) {
+        if (activity == null) {
+            throw new InjectException("Fragment can be injected only in activities (member " + field.getName() + " in "
+                    + context.getClass());
+        }
+        Fragment fragment = null;
+        if (activity instanceof FragmentActivity) {
+        	fragment = ((FragmentActivity)activity).getSupportFragmentManager().findFragmentById(fragmentId);
+        }
+        if (fragment == null) {
+            throw new InjectException("Fragment not found for member " + field.getName());
+        }
+        return fragment;
 	}
 	
 	/**
