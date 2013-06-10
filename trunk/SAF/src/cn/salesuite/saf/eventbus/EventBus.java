@@ -16,7 +16,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import cn.salesuite.saf.executor.concurrent.BackgroundExecutor;
 
 /**
  * 
@@ -24,7 +25,7 @@ import java.util.concurrent.Executors;
  * 
  */
 public class EventBus {
-    static ExecutorService executorService = Executors.newCachedThreadPool();
+    static ExecutorService executorService = new BackgroundExecutor();
     
 	public static final String DEFAULT_IDENTIFIER = "saf_bus";
 
