@@ -38,7 +38,7 @@ public class SAFApp extends Application {
 	public String osVersion; // 操作系统版本
 	public String mobileType;// 手机型号
 	public String version;   // app的versionName
-	public String citycode;  // 城市代码
+	public int versionCode;  // app的versionCode
 
 	public ImageLoader imageLoader;
 	private static SAFApp instance;
@@ -81,6 +81,7 @@ public class SAFApp extends Application {
 			mobileType = Build.MODEL;
 			if (null != info) {
 				version = info.versionName;
+				versionCode = info.versionCode;
 			}
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
