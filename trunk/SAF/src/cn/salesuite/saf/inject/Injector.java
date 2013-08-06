@@ -7,6 +7,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -37,9 +38,33 @@ public class Injector {
     protected final Context context;
     protected final Object target;
     protected final Activity activity;
+    protected final View fragmentView;
     protected final Resources resources;
     protected final Class<?> clazz;
     private final Bundle extras;
+    
+	public enum Finder {
+		DIALOG {
+			@Override
+			public View findById(Object source, int id) {
+				return ((Dialog) source).findViewById(id);
+			}
+		},
+		ACTIVITY {
+			@Override
+			public View findById(Object source, int id) {
+				return ((Activity) source).findViewById(id);
+			}
+		},
+		VIEW {
+			@Override
+			public View findById(Object source, int id) {
+				return ((View) source).findViewById(id);
+			}
+		};
+
+		public abstract View findById(Object source, int id);
+	}
     
     public Injector(Context context) {
         this(context, context);
@@ -64,24 +89,79 @@ public class Injector {
             activity = null;
             extras = null;
         }
+        fragmentView = null;
         clazz = target.getClass();
     }
     
-    public static Injector injectInto(Context context) {
+	public Injector(Dialog dialog) {
+        if (dialog == null) {
+            throw new IllegalArgumentException("dialog may not be null");
+        }
+        this.target = dialog;
+        resources = dialog.getContext().getResources();
+        context = dialog.getContext();
+        clazz = target.getClass();
+        activity = null;
+        extras = null;
+        fragmentView = null;
+	}
+	
+	public Injector(Fragment fragment , View v) {
+        if (fragment == null || v == null) {
+            throw new IllegalArgumentException("fragment/view may not be null");
+        }
+        fragmentView = v;
+        this.target = fragment;
+        resources = fragment.getResources();
+        context = fragment.getActivity().getApplicationContext();
+        clazz = fragment.getClass();
+        activity = null;
+        extras = null;
+	}
+
+	/**
+	 * 注入到Activity
+	 * @param context
+	 * @return
+	 */
+	public static Injector injectInto(Context context) {
         return inject(context, context);
     }
-    
-    public static Injector inject(Context context, Object target) {
-        Injector injector = new Injector(context, target);
-        injector.injectAll();
+	
+	/**
+	 * 注入到dialog
+	 * @param dialog
+	 * @return
+	 */
+	public static Injector injectInto(Dialog dialog) {
+        Injector injector = new Injector(dialog);
+        injector.injectAll(Finder.DIALOG);
+        return injector;
+    }
+	
+	/**
+	 * 注入到fragment
+	 * @param fragment
+	 * @param v
+	 * @return
+	 */
+	public static Injector injectInto(Fragment fragment,View v) {
+        Injector injector = new Injector(fragment,v);
+        injector.injectAll(Finder.VIEW);
         return injector;
     }
 
-	private void injectAll() {
-        injectFields();
+	public static Injector inject(Context context, Object target) {
+        Injector injector = new Injector(context, target);
+        injector.injectAll(Finder.ACTIVITY);
+        return injector;
+    }
+
+	private void injectAll(Finder finder) {
+        injectFields(finder);
 	}
 
-	private void injectFields() {
+	private void injectFields(Finder finder) {
 		long start = System.currentTimeMillis();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
@@ -89,7 +169,32 @@ public class Injector {
             for (Annotation annotation : annotations) {
                 if (annotation.annotationType() == InjectView.class) {
                     int id = ((InjectView) annotation).id();
-                    View view = findView(field, id);
+                    View view = null;
+                	switch (finder) {  
+                    case DIALOG:
+                    	view = finder.DIALOG.findById(target, id);
+                        if (view == null) {
+                            throw new InjectException("View not found for member " + field.getName());
+                        }
+                        break;  
+                    case ACTIVITY:
+                        if (activity == null) {
+                            throw new InjectException("Views can be injected only in activities (member " + field.getName() + " in "
+                                    + context.getClass());
+                        }
+                    	view = finder.ACTIVITY.findById(activity, id);
+                        if (view == null) {
+                            throw new InjectException("View not found for member " + field.getName());
+                        }
+                        break;
+                    case VIEW:
+                    	view = finder.VIEW.findById(fragmentView, id);
+                        if (view == null) {
+                            throw new InjectException("View not found for member " + field.getName());
+                        }
+                        break;  
+                    }
+                	
                     injectIntoField(field, view);
                 } else if (annotation.annotationType() == InjectResource.class) {
                     Object ressource = findResource(field.getType(), field, (InjectResource) annotation);
@@ -114,24 +219,6 @@ public class Injector {
             long time = System.currentTimeMillis() - start;
             Log.d(TAG, "Injected fields in " + time + "ms (" + fields.length + " fields checked)");
         }
-	}
-
-	/**
-	 * 查找view
-	 * @param field
-	 * @param viewId
-	 * @return
-	 */
-	private View findView(Field field, int viewId) {
-        if (activity == null) {
-            throw new InjectException("Views can be injected only in activities (member " + field.getName() + " in "
-                    + context.getClass());
-        }
-        View view = activity.findViewById(viewId);
-        if (view == null) {
-            throw new InjectException("View not found for member " + field.getName());
-        }
-        return view;
 	}
 	
 	/**
