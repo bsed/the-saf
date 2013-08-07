@@ -26,8 +26,10 @@ import cn.salesuite.saf.inject.annotation.InjectSystemService;
 import cn.salesuite.saf.inject.annotation.InjectView;
 
 /**
- * 注入view、resource、systemservice到Activity<br>
- * 在Activity中使用注解，首先需要使用Injector.injectInto(this);
+ * 可以注入view、resource、systemservice<br>
+ * 在Activity中使用注解，首先需要在onCreate（）中使用Injector.injectInto(this);<br>
+ * 在Dialog中使用注解，首先需要在构造方法中使用Injector.injectInto(this);<br>
+ * 在Fragment中使用注解，首先需要在onCreateView（）中使用Injector.injectInto(this,view);
  * @author Tony Shen
  *
  */
@@ -56,7 +58,7 @@ public class Injector {
 				return ((Activity) source).findViewById(id);
 			}
 		},
-		VIEW {
+	    FRAGMENT {
 			@Override
 			public View findById(Object source, int id) {
 				return ((View) source).findViewById(id);
@@ -120,7 +122,7 @@ public class Injector {
 	}
 
 	/**
-	 * 注入到Activity
+	 * 在Activity中使用注解
 	 * @param context
 	 * @return
 	 */
@@ -129,7 +131,7 @@ public class Injector {
     }
 	
 	/**
-	 * 注入到dialog
+	 * 在dialog中使用注解
 	 * @param dialog
 	 * @return
 	 */
@@ -140,14 +142,14 @@ public class Injector {
     }
 	
 	/**
-	 * 注入到fragment
+	 * 在fragment中使用注解
 	 * @param fragment
 	 * @param v
 	 * @return
 	 */
 	public static Injector injectInto(Fragment fragment,View v) {
         Injector injector = new Injector(fragment,v);
-        injector.injectAll(Finder.VIEW);
+        injector.injectAll(Finder.FRAGMENT);
         return injector;
     }
 
@@ -173,9 +175,6 @@ public class Injector {
                 	switch (finder) {  
                     case DIALOG:
                     	view = finder.DIALOG.findById(target, id);
-                        if (view == null) {
-                            throw new InjectException("View not found for member " + field.getName());
-                        }
                         break;  
                     case ACTIVITY:
                         if (activity == null) {
@@ -183,18 +182,16 @@ public class Injector {
                                     + context.getClass());
                         }
                     	view = finder.ACTIVITY.findById(activity, id);
-                        if (view == null) {
-                            throw new InjectException("View not found for member " + field.getName());
-                        }
                         break;
-                    case VIEW:
-                    	view = finder.VIEW.findById(fragmentView, id);
-                        if (view == null) {
-                            throw new InjectException("View not found for member " + field.getName());
-                        }
+                    case FRAGMENT:
+                    	view = finder.FRAGMENT.findById(fragmentView, id);
                         break;  
                     }
                 	
+                    if (view == null) {
+                        throw new InjectException("View not found for member " + field.getName());
+                    }
+                    
                     injectIntoField(field, view);
                 } else if (annotation.annotationType() == InjectResource.class) {
                     Object ressource = findResource(field.getType(), field, (InjectResource) annotation);
