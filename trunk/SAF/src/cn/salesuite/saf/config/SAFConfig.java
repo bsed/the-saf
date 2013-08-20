@@ -8,11 +8,6 @@ package cn.salesuite.saf.config;
  *
  */
 public class SAFConfig {
-		
-	/**
-	 * number of messages should be saved in log
-	 */
-	public static int LOG_SIZE=1000;
 	
 	/**
 	 * Set tag name
@@ -22,7 +17,7 @@ public class SAFConfig {
 	public static int TAG_LEVEL = 0;
 	
 	/**
-	 * 需要使用ImageLoader组件时,必须设置default_img_id的值
+	 * 需要使用ImageLoader组件时,可以设置default_img_id的值,表示全局的默认图片
 	 */
 	public static int default_img_id;
 	
