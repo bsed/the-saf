@@ -190,6 +190,37 @@ public class StringHelper {
         return !StringHelper.isEmpty(str);
     }
 	
+    /**
+     * <p>Checks if a String is whitespace, empty ("") or null.</p>
+     *
+     * <pre>
+     * StringUtils.isBlank(null)      = true
+     * StringUtils.isBlank("")        = true
+     * StringUtils.isBlank(" ")       = true
+     * StringUtils.isBlank("bob")     = false
+     * StringUtils.isBlank("  bob  ") = false
+     * </pre>
+     *
+     * @param obj  the String to check, may be null
+     * @return <code>true</code> if the String is null, empty or whitespace
+     */
+    public static boolean isBlank(Object obj) {
+    	if (null == obj) {
+    		return true;
+    	}
+    	String str = obj.toString();
+        int strLen;
+        if ((strLen = str.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if ((Character.isWhitespace(str.charAt(i)) == false)) {
+                return false;
+            }
+        }
+        return true;
+    }
+	
 	/**
 	 * 如果str字符串为null,返回为"";如果字符串不为空,返回原来的字符串
 	 * @param str
