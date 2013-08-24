@@ -10,16 +10,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-
-import cn.salesuite.saf.config.SAFConfig;
-
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -31,6 +29,9 @@ import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import cn.salesuite.saf.config.SAFConfig;
+
+import com.alibaba.fastjson.JSON;
 
 /**
  * SAF的工具类
@@ -321,5 +322,27 @@ public class SAFUtil {
 	public static void hideSoftInputFromWindow(Context context,View view) {
 		InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);  
+	}
+	
+	/**
+	 * 获取AndroidManifest.xml中<meta-data>元素的值
+	 * @param context
+	 * @param name
+	 * @return
+	 */
+	public static <T> T getMetaData(Context context, String name) {
+		try {
+			final ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(),
+					PackageManager.GET_META_DATA);
+
+			if (ai.metaData != null) {
+				return (T) ai.metaData.get(name);
+			}
+		}
+		catch (Exception e) {
+			System.out.print("Couldn't find meta-data: " + name);
+		}
+
+		return null;
 	}
 }

@@ -194,11 +194,11 @@ public class StringHelper {
      * <p>Checks if a String is whitespace, empty ("") or null.</p>
      *
      * <pre>
-     * StringUtils.isBlank(null)      = true
-     * StringUtils.isBlank("")        = true
-     * StringUtils.isBlank(" ")       = true
-     * StringUtils.isBlank("bob")     = false
-     * StringUtils.isBlank("  bob  ") = false
+     * StringHelper.isBlank(null)      = true
+     * StringHelper.isBlank("")        = true
+     * StringHelper.isBlank(" ")       = true
+     * StringHelper.isBlank("bob")     = false
+     * StringHelper.isBlank("  bob  ") = false
      * </pre>
      *
      * @param obj  the String to check, may be null
