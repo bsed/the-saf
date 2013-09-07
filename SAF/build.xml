@@ -15,7 +15,7 @@
 	<property name="jar_core_name" value="${project_name}-core-${DSTAMP}.jar" />
 	<property name="jar_util_name" value="${project_name}-utils-${DSTAMP}.jar" />
 	<property name="jar_annotation_name" value="${project_name}-annotation-${DSTAMP}.jar" />
-	<property name="jar_view_name" value="${project_name}-view-${DSTAMP}.jar" />
+	<property name="jar_orm_name" value="${project_name}-orm-${DSTAMP}.jar" />
 	<property name="javadoc_dir" value="${dest_dir}/javadoc" />
 	<property name="proguard" value="${basedir}/proguard"/>
 	<property name="proguard.lib" value="${proguard}/lib"/>
@@ -43,7 +43,7 @@
 		<jar jarfile="${dest_dir}/${jar_core_name}" basedir="${build_dir}" includes="**/*.class"
 	         excludes="cn/salesuite/saf/utils/*.class,cn/salesuite/saf/inject/**/*.class,cn/salesuite/saf/view/*.class,cn/salesuite/saf/eventbus/*.class" />
 		<jar jarfile="${dest_dir}/${jar_annotation_name}" basedir="${build_dir}" includes="cn/salesuite/saf/inject/**/*.class" />
-		<jar jarfile="${dest_dir}/${jar_view_name}" basedir="${build_dir}" includes="cn/salesuite/saf/view/*.class" />
+		<jar jarfile="${dest_dir}/${jar_orm_name}" basedir="${build_dir}" includes="cn/salesuite/saf/orm/**/*.class" />
 		<jar jarfile="${dest_dir}/${jar_all_name}" basedir="${build_dir}" includes="**/*.class"/>
 	</target>
 
