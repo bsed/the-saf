@@ -13,7 +13,6 @@ import java.util.TimeZone;
 
 import com.decarta.shifting.ShiftTool;
 
-import cn.salesuite.saf.exception.APIException;
 
 import android.content.Context;
 import android.location.Location;
