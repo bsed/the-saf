@@ -12,8 +12,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 
-import cn.salesuite.saf.exception.APIException;
-
 /**
  * 使用HTTP Basic Access Authentication进行访问api
  * @author Tony Shen
@@ -27,9 +25,8 @@ public class BaseAuthenicationHttpClient {
 	 * @param password 密码
 	 * @param params
 	 * @return
-	 * @throws APIException
 	 */
-	 public static String doRequest(String urlString, String name, String password, HashMap<String,String> params) throws APIException {
+	 public static String doRequest(String urlString, String name, String password, HashMap<String,String> params) {
 		try{
 	    	URL url = new URL (urlString);
 	        String userPassword = name+":"+password;
@@ -60,7 +57,7 @@ public class BaseAuthenicationHttpClient {
 	        in.close();
 	        return line.trim();
 		}catch(IOException e){
-			throw APIException.wrapToAPIException(e);
+			return null;
 		}
 
 	 }
@@ -71,9 +68,8 @@ public class BaseAuthenicationHttpClient {
 	  * @param name 用户名
 	  * @param password 密码
 	  * @return
-	  * @throws APIException
 	  */
-	 public static String doRequest(String urlString, String name, String password) throws APIException {
+	 public static String doRequest(String urlString, String name, String password) {
 		 try{
 	        URL url = new URL (urlString);
 
@@ -91,7 +87,7 @@ public class BaseAuthenicationHttpClient {
 	        in.close();
 	        return line.trim();
 		 }catch(IOException e){
-			 throw APIException.wrapToAPIException(e);
+			return null;
 		 }
 	 }
 
