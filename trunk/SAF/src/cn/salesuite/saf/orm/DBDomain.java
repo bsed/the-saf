@@ -108,12 +108,12 @@ public class DBDomain {
 		}
 	}
 	
-	public void delete(Long id) {
+	public void delete(int id) {
 		SQLiteDatabase db = DBManager.openDatabase();
 		db.delete(mTableInfo.getTableName(), "Id=" + id, null);
 	}
 	
-	public <T extends DBDomain>T get(Long id) {
+	public <T extends DBDomain>T get(int id) {
 		return SQLiteUtils.rawQuerySingle(getClass(),"select * from "+mTableInfo.getTableName()+" where Id="+id,null);
 	}
 	
