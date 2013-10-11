@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -23,7 +22,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
@@ -259,21 +257,7 @@ public class SAFUtil {
 	public static String printObject(Object obj) {
 		return JSON.toJSONString(obj);
 	}
-	
-	/**
-	 * 封装AsyncTask,当使用Android 3.0以及以上版本时可以使用线程池执行AsyncTask
-	 * @param task
-	 * @param args
-	 */
-	@TargetApi(11)
-    public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> task, T... args) {
-        if (isHoneycombOrHigher()) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, args);
-        } else {
-            task.execute(args);
-        }
-    }
-	
+
 	/**
 	 * 对文件设置root权限
 	 * @param filePath
