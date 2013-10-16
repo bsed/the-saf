@@ -22,7 +22,7 @@ import cn.salesuite.saf.utils.SAFUtil;
  * @author Tony Shen
  *
  */
-public class SAFWithoutLocationActivity extends Activity{
+public class SAFBaseActivity extends Activity{
 
 	public static SAFApp app;
 	public String TAG;
