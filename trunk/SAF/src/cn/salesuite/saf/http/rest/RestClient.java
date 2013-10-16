@@ -180,7 +180,8 @@ public class RestClient {
 	 * @return RestClient
 	 * @throws RestException
 	 */
-	public static RestClient get(final String url) throws RestException {
+	public static RestClient get(String url) throws RestException {
+		System.out.println("get url="+url);
 		return new RestClient(url, RestConstant.METHOD_GET);
 	}
 	
@@ -190,7 +191,8 @@ public class RestClient {
 	 * @param callback
 	 * @throws RestException
 	 */
-	public static void get(final String url,HttpResponseHandler callback) throws RestException {
+	public static void get(String url,HttpResponseHandler callback) throws RestException {
+		System.out.println("get url="+url);
 		RestClient client = new RestClient(url, RestConstant.METHOD_GET);
 		String body = client.body();
 		callback.onSuccess(body);
@@ -203,7 +205,8 @@ public class RestClient {
 	 * @return RestClient
 	 * @throws RestException
 	 */
-	public static RestClient post(final String url) throws RestException {
+	public static RestClient post(String url) throws RestException {
+		System.out.println("post url="+url);
 		return new RestClient(url, RestConstant.METHOD_POST);
 	}
 
@@ -214,11 +217,13 @@ public class RestClient {
 	 * @param callback
 	 * @throws RestException
 	 */
-	public static void post(final String url,JSONObject json,HttpResponseHandler callback) throws RestException {
+	public static void post(String url,JSONObject json,HttpResponseHandler callback) throws RestException {
+		System.out.println("post url="+url);
 		
 		RestClient request = new RestClient(url, RestConstant.METHOD_POST);
 		request.acceptJson().contentType("application/json");
 		try {
+			System.out.println("post body="+JSON.toJSONString(json));
 			request.send(json);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -234,7 +239,7 @@ public class RestClient {
 	 * @return RestClient
 	 * @throws RestException
 	 */
-	public static RestClient put(final String url) throws RestException {
+	public static RestClient put(String url) throws RestException {
 		return new RestClient(url, RestConstant.METHOD_PUT);
 	}
 
@@ -245,7 +250,7 @@ public class RestClient {
 	 * @return RestClient
 	 * @throws RestException
 	 */
-	public static RestClient delete(final String url) throws RestException {
+	public static RestClient delete(String url) throws RestException {
 		return new RestClient(url, RestConstant.METHOD_DELETE);
 	}
 
