@@ -18,7 +18,7 @@ import cn.salesuite.saf.net.CellIDInfoManager;
 import cn.salesuite.saf.utils.SAFUtil;
 
 /**
- * SAF框架基类的Activity,无需使用定位功能的Activity可以继承该Activity
+ * SAF框架基类的Activity
  * @author Tony Shen
  *
  */
