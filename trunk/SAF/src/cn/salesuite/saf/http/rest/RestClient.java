@@ -218,12 +218,11 @@ public class RestClient {
 	 * @throws RestException
 	 */
 	public static void post(String url,JSONObject json,HttpResponseHandler callback) throws RestException {
-		System.out.println("post url="+url);
+		System.out.println("post url="+url+"\n"+"post body="+JSON.toJSONString(json));
 		
 		RestClient request = new RestClient(url, RestConstant.METHOD_POST);
 		request.acceptJson().contentType("application/json");
 		try {
-			System.out.println("post body="+JSON.toJSONString(json));
 			request.send(json);
 		} catch (IOException e) {
 			e.printStackTrace();
