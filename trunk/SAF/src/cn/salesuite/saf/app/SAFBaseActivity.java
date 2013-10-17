@@ -13,8 +13,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 import cn.salesuite.saf.config.SAFConstant;
-import cn.salesuite.saf.location.CellIDInfo;
-import cn.salesuite.saf.location.CellIDInfoManager;
+import cn.salesuite.saf.net.CellIDInfo;
+import cn.salesuite.saf.net.CellIDInfoManager;
 import cn.salesuite.saf.utils.SAFUtil;
 
 /**

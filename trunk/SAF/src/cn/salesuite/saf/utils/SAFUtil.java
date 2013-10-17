@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -328,5 +329,19 @@ public class SAFUtil {
 		}
 
 		return null;
+	}
+	
+	/**
+	 * 判断经纬度是否在中国
+	 * @param mLocation
+	 * @return
+	 */
+	public static boolean positionInChina(Location mLocation){
+		if(mLocation.getLatitude()>18.167 && mLocation.getLatitude()<53.55){
+			if(mLocation.getLongitude()>73.667 && mLocation.getLongitude()<135.033){
+				return true;
+			}
+		}
+		return false;
 	}
 }
