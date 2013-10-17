@@ -1,4 +1,4 @@
-package cn.salesuite.saf.location;
+package cn.salesuite.saf.net;
 
 import java.util.ArrayList;
 import java.util.List;
