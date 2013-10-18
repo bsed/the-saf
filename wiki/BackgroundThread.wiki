@@ -1,0 +1,5 @@
+#summary One-sentence summary of this page.
+
+= BackgroundThread =
+
+表示回调方法在后台线程中运行，不占用主线程的资源。后台线程的优先级低于主线程的优先级。避免app出现ANR（Application Not Responding）的现象。
