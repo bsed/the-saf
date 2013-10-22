@@ -391,6 +391,17 @@ public class RestClient {
 			throw new RestException(e);
 		}
 	}
+	
+	/**
+	 * 设置{@link HttpURLConnection#setUseCaches(boolean)}的值
+	 * 
+	 * @param useCaches
+	 * @return RestClient
+	 */
+	public RestClient useCaches(final boolean useCaches) {
+		getConnection().setUseCaches(useCaches);
+		return this;
+	}
 
 	/**
 	 * 设置header中accept的值
