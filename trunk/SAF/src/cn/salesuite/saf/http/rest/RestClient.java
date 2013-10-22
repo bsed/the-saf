@@ -705,6 +705,7 @@ public class RestClient {
 		if (output != null)
 			return this;
 		getConnection().setDoOutput(true);
+		getConnection().setUseCaches(false);// post 请求不能使用缓存  
 		final String charset = getParam(
 				getConnection().getRequestProperty(RestConstant.HEADER_CONTENT_TYPE),
 				RestConstant.PARAM_CHARSET);
