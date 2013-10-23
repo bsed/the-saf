@@ -17,10 +17,7 @@ import android.util.Log;
  */
 public class BitmapProcessor {
 
-	private final Context context;
-
     public BitmapProcessor(final Context context) {
-        this.context = context;
         ResponseCache.setDefault(new ImageResponseCache(context.getCacheDir()));
     }
     
