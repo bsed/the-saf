@@ -1,0 +1,5 @@
+#summary One-sentence summary of this page.
+
+= @InjectView =
+
+@InjectView是saf中的注解，可用于Activity、Dialog、Fragment
