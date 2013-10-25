@@ -1,0 +1,15 @@
+cn.salesuite.saf.app
+cn.salesuite.saf.config
+cn.salesuite.saf.eventbus
+cn.salesuite.saf.executor.concurrent
+cn.salesuite.saf.http
+cn.salesuite.saf.http.rest
+cn.salesuite.saf.imagecache
+cn.salesuite.saf.inject
+cn.salesuite.saf.inject.annotation
+cn.salesuite.saf.net
+cn.salesuite.saf.orm
+cn.salesuite.saf.orm.annotation
+cn.salesuite.saf.prefs
+cn.salesuite.saf.utils
+cn.salesuite.saf.view
