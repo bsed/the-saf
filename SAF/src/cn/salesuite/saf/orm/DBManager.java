@@ -12,6 +12,8 @@ import android.support.v4.util.LruCache;
 import android.util.Log;
 
 /**
+ * 如果要使用sqlite orm，必须在application中先使用DBManager.initialize(this);<br>
+ * 如果结合SAFApp的功能，可以先写一个application继承SAFApp，然后将DBManager.initialize(this);
  * @author Tony Shen
  *
  */
