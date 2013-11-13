@@ -140,7 +140,10 @@ public class Router {
 			throw new RouterException("You need to supply a context for Router "+ this.toString());
 		}
 		
-		Intent intent = this.parseUrl(url);
+		RouterParameter param = parseUrl(url);
+		RouterOptions options = param.routerOptions;
+		
+		Intent intent = this.parseRouterParameter(param);
 		if (intent == null) {
 			return;
 		}
@@ -150,6 +153,10 @@ public class Router {
 		
 		this.addFlagsToIntent(intent, context);
 		context.startActivity(intent);
+		
+		if (options.enterAnim>0 && options.exitAnim>0) {
+			((Activity)context).overridePendingTransition(options.enterAnim, options.exitAnim);
+		}
 	}
 	
 	public void open(String url,Context context,Bundle extras, int flags) {
@@ -157,7 +164,10 @@ public class Router {
 			throw new RouterException("You need to supply a context for Router "+ this.toString());
 		}
 		
-		Intent intent = this.parseUrl(url);
+		RouterParameter param = parseUrl(url);
+		RouterOptions options = param.routerOptions;
+		
+		Intent intent = this.parseRouterParameter(param);
 		if (intent == null) {
 			return;
 		}
@@ -166,6 +176,10 @@ public class Router {
 		}
 		this.addFlagsToIntent(intent, context, flags);
 		context.startActivity(intent);
+		
+		if (options.enterAnim>0 && options.exitAnim>0) {
+			((Activity)context).overridePendingTransition(options.enterAnim, options.exitAnim);
+		}
 	}
 
 	private void addFlagsToIntent(Intent intent, Context context) {
@@ -176,16 +190,10 @@ public class Router {
 		intent.addFlags(flags);
 	}
 
-	private Intent parseUrl(String url) {
-		RouterParameter param = this.parseParameter(url);
+	private Intent parseRouterParameter(RouterParameter param) {
 		RouterOptions options = param.routerOptions;
 		Intent intent = new Intent();
-		if (options.defaultParams != null) {
-			for (Entry<String, String> entry : options.defaultParams.entrySet()) {
-				intent.putExtra(entry.getKey(), entry.getValue());
-			}
-		}
-		
+
 		for (Entry<String, String> entry : param.openParams.entrySet()) {
 			intent.putExtra(entry.getKey(), entry.getValue());
 		}
@@ -195,7 +203,7 @@ public class Router {
 		return intent;
 	}
 
-	private RouterParameter parseParameter(String url) {
+	private RouterParameter parseUrl(String url) {
 		if (this.cachedRoutes.get(url) != null) {
 			return this.cachedRoutes.get(url);
 		}

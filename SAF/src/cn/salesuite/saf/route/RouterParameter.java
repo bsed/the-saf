@@ -17,7 +17,8 @@ public class RouterParameter {
 	public Map<String, String> openParams;
 
 	public static class RouterOptions {
-		public Class<? extends Activity> clazz;
-		Map<String, String> defaultParams;
+		public Class<? extends Activity> clazz; // 跳转到的class
+		public int enterAnim;                   // activity进入的动画
+		public int exitAnim;                    // activity离开的动画
 	}
 }
