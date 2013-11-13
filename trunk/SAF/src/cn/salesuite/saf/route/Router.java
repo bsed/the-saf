@@ -25,7 +25,7 @@ public class Router {
 	public static final int DEFAULT_CACHE_SIZE = 1024;
 	
 	private Context context;
-	private LruCache<String, RouterParameter> cachedRoutes = new LruCache<String, RouterParameter>(DEFAULT_CACHE_SIZE); // url缓存
+	private LruCache<String, RouterParameter> cachedRoutes = new LruCache<String, RouterParameter>(DEFAULT_CACHE_SIZE); // 缓存跳转的参数
 	private final Map<String, RouterOptions> routes = new HashMap<String, RouterOptions>();                             // 存放Intent之间跳转的route
 	
 	private static final Router router = new Router();
@@ -46,7 +46,7 @@ public class Router {
 	}
 	
 	/**
-	 * @param format for example, "users/:id" or "groups/:id/topics/:topic_id"
+	 * @param format 形如"user/:user/password/:password"这样的格式，其中user、password为参数名
 	 * @param clazz
 	 */
 	public void map(String format, Class<? extends Activity> clazz) {
@@ -62,21 +62,21 @@ public class Router {
 	}
 
 	/**
-	 * 调转到网页
+	 * 跳转到网页，如下：
 	 * <pre>
 	 * <code>
 	 * Router.getInstance().openURI("http://www.g.cn");
 	 * </code>
 	 * </pre>
 	 * 
-	 * 调用系统电话
+	 * 调用系统电话，如下：
 	 * <pre>
 	 * <code>
 	 * Router.getInstance().openURI("tel://18662430000");
 	 * </code>
 	 * </pre>
 	 * 
-	 * 调用手机上的地图app，打开地图
+	 * 调用手机上的地图app，打开地图，如下：
 	 * <pre>
 	 * <code>
 	 * Router.getInstance().openURI("geo:0,0?q=31,121");
@@ -118,6 +118,15 @@ public class Router {
 		context.startActivity(intent);
 	}
 	
+	/**
+	 * 跳转到某个activity并传值
+	 * <pre>
+	 * <code>
+	 * Router.getInstance().open("user/fengzhizi715/password/715");
+	 * </code>
+	 * </pre>
+	 * @param url
+	 */
 	public void open(String url) {
 		this.open(url,this.context);
 	}
