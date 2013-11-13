@@ -61,6 +61,29 @@ public class Router {
 		this.routes.put(format, options);
 	}
 
+	/**
+	 * 调转到网页
+	 * <pre>
+	 * <code>
+	 * Router.getInstance().openURI("http://www.g.cn");
+	 * </code>
+	 * </pre>
+	 * 
+	 * 调用系统电话
+	 * <pre>
+	 * <code>
+	 * Router.getInstance().openURI("tel://18662430000");
+	 * </code>
+	 * </pre>
+	 * 
+	 * 调用手机上的地图app，打开地图
+	 * <pre>
+	 * <code>
+	 * Router.getInstance().openURI("geo:0,0?q=31,121");
+	 * </code>
+	 * </pre>
+	 * @param url
+	 */
 	public void openURI(String url) {
 		this.openURI(url,this.context);
 	}
@@ -141,9 +164,7 @@ public class Router {
 	}
 	
 	private void addFlagsToIntent(Intent intent, Context context,int flags) {
-		if (context == this.context) {
-			intent.addFlags(flags);
-		}
+		intent.addFlags(flags);
 	}
 
 	private Intent parseUrl(String url) {
