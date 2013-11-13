@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.salesuite.saf.intent.route;
+package cn.salesuite.saf.route;
 
 /**
  * @author Tony Shen
