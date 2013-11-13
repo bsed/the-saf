@@ -17,6 +17,7 @@
 	<property name="jar_annotation_name" value="${project_name}-annotation-${DSTAMP}.jar" />
 	<property name="jar_orm_name" value="${project_name}-orm-${DSTAMP}.jar" />
 	<property name="jar_http_name" value="${project_name}-http-${DSTAMP}.jar" />
+	<property name="jar_router_name" value="${project_name}-router-${DSTAMP}.jar" />
 	<property name="javadoc_dir" value="${dest_dir}/javadoc" />
 	<property name="proguard" value="${basedir}/proguard"/>
 	<property name="proguard.lib" value="${proguard}/lib"/>
@@ -46,6 +47,7 @@
 		<jar jarfile="${dest_dir}/${jar_annotation_name}" basedir="${build_dir}" includes="cn/salesuite/saf/inject/**/*.class" />
 		<jar jarfile="${dest_dir}/${jar_orm_name}" basedir="${build_dir}" includes="cn/salesuite/saf/orm/**/*.class" />
 		<jar jarfile="${dest_dir}/${jar_http_name}" basedir="${build_dir}" includes="cn/salesuite/saf/http/rest/**/*.class" />
+		<jar jarfile="${dest_dir}/${jar_router_name}" basedir="${build_dir}" includes="cn/salesuite/saf/route/**/*.class" />
 		<jar jarfile="${dest_dir}/${jar_all_name}" basedir="${build_dir}" includes="**/*.class"/>
 	</target>
 
