@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.salesuite.saf.intent.route;
+package cn.salesuite.saf.route;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.salesuite.saf.intent.route;
+package cn.salesuite.saf.route;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.util.LruCache;
-import cn.salesuite.saf.intent.route.RouterParameter.RouterOptions;
+import cn.salesuite.saf.route.RouterParameter.RouterOptions;
 
 /**
  * Intent Router可以完成各个Intent之间的跳转，类似rails的router功能
