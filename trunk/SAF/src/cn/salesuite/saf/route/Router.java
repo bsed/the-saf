@@ -16,6 +16,22 @@ import android.support.v4.util.LruCache;
 import cn.salesuite.saf.route.RouterParameter.RouterOptions;
 
 /**
+ * 要使用Router功能时，必须在application中做好router的映射<br>
+ * 从某个Activity跳转到SecondActivity需要传递user、password2个参数，需要做这样的映射
+ * <pre>
+ * <code>
+ * Router.getInstance().map("user/:user/password/:password", SecondActivity.class);
+ * </code>
+ * </pre>
+ * 跳转时可以增加动画效果
+ * <pre>
+ * <code>
+ * RouterOptions options = new RouterOptions();
+ * options.enterAnim = R.anim.slide_left_in;
+ * options.exitAnim = R.anim.slide_right_out;
+ * Router.getInstance().map("user/:user/password/:password", SecondActivity.class, options);
+ * </code>
+ * </pre>
  * Intent Router可以完成各个Intent之间的跳转，类似rails的router功能
  * @author Tony Shen
  *
@@ -254,7 +270,7 @@ public class Router {
 				continue;
 			}
 
-			if (!routerPart.equals(givenPart)) { // 偶数个参数不相等时的情况
+			if (!routerPart.equals(givenPart)) { // 奇数个参数进行参数名的匹配，如果不相等则退出
 				return null;
 			}
 		}
