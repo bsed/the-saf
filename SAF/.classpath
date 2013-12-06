@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/commons-codec-1.7.jar"/>
 	<classpathentry kind="lib" path="lib/disklrucache-2.0.2-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/fastjson-1.1.34.android.jar"/>
+	<classpathentry kind="lib" path="lib/joda-time-2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
