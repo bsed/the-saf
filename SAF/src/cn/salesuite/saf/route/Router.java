@@ -109,16 +109,7 @@ public class Router {
 	}
 	
 	public void openURI(String url,Context context,Bundle extras) {
-		if (context == null) {
-			throw new RouterException("You need to supply a context for Router " + this.toString());
-		}
-		
-		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-		this.addFlagsToIntent(intent, context);
-		if (extras != null) {
-			intent.putExtras(extras);
-		}
-		context.startActivity(intent);
+		openURI(url,context,extras,Intent.FLAG_ACTIVITY_NEW_TASK);
 	}
 	
 	public void openURI(String url,Context context,Bundle extras,int flags) {
@@ -152,27 +143,7 @@ public class Router {
 	}
 	
 	public void open(String url,Context context,Bundle extras) {
-		if (context == null) {
-			throw new RouterException("You need to supply a context for Router "+ this.toString());
-		}
-		
-		RouterParameter param = parseUrl(url);
-		RouterOptions options = param.routerOptions;
-		
-		Intent intent = this.parseRouterParameter(param);
-		if (intent == null) {
-			return;
-		}
-		if (extras != null) {
-			intent.putExtras(extras);
-		}
-		
-		this.addFlagsToIntent(intent, context);
-		context.startActivity(intent);
-		
-		if (options.enterAnim>0 && options.exitAnim>0) {
-			((Activity)context).overridePendingTransition(options.enterAnim, options.exitAnim);
-		}
+		open(url,context,extras,Intent.FLAG_ACTIVITY_NEW_TASK); // 默认的跳转类型,将Activity放到一个新的Task中
 	}
 	
 	public void open(String url,Context context,Bundle extras, int flags) {
@@ -197,11 +168,13 @@ public class Router {
 			((Activity)context).overridePendingTransition(options.enterAnim, options.exitAnim);
 		}
 	}
-
-	private void addFlagsToIntent(Intent intent, Context context) {
-		addFlagsToIntent(intent,context,Intent.FLAG_ACTIVITY_NEW_TASK);// 默认的跳转类型,将Activity放到一个新的Task中
-	}
 	
+	/**
+	 * intent增加额外的flag
+	 * @param intent
+	 * @param context
+	 * @param flags
+	 */
 	private void addFlagsToIntent(Intent intent, Context context,int flags) {
 		intent.addFlags(flags);
 	}
