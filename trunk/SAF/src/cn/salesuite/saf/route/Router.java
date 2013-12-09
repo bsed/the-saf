@@ -138,6 +138,21 @@ public class Router {
 		this.open(url,null);
 	}
 	
+	/**
+	 * 跳转到某个activity并传值,router跳转前的先判断是否满足跳转的条件,doCheck()返回false表示不跳转，true表示进行跳转到下一个activity
+	 * <pre>
+	 * <code>
+	 * Router.getInstance().open("user/fengzhizi715/password/715",new RouterChecker(){
+     *
+	 *	 public boolean doCheck() {
+	 *		 return false;
+	 *	 }
+	 * });
+	 * </code>
+	 * </pre>
+	 * @param url
+	 * @param checker
+	 */
 	public void open(String url,RouterChecker checker) {
 		this.open(url,this.context,checker);
 	}
