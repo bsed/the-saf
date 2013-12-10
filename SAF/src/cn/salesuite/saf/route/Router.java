@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.util.LruCache;
 import cn.salesuite.saf.route.RouterParameter.RouterOptions;
 
@@ -198,6 +199,50 @@ public class Router {
 		}
 	}
 	
+	public void openFragment(FragmentOptions fragmentOptions,int containerViewId) {
+		if (!(fragmentOptions != null
+				&& fragmentOptions.mFragmentInstnace != null
+				&& fragmentOptions.fragmentManager != null))
+			return;
+		
+		if (fragmentOptions.mArg!=null) {
+			fragmentOptions.mFragmentInstnace.setArguments(fragmentOptions.mArg);
+		}
+		
+		fragmentOptions.fragmentManager.beginTransaction().replace(containerViewId , fragmentOptions.mFragmentInstnace).addToBackStack(null).commit();
+	}
+	
+	public void openFragment(String url,FragmentOptions fragmentOptions,int containerViewId) {
+		if (!(fragmentOptions != null
+				&& fragmentOptions.mFragmentInstnace != null
+				&& fragmentOptions.fragmentManager != null))
+			return;
+		
+		Fragment fragment = fragmentOptions.mFragmentInstnace;
+		fragment = parseFragmentUrl(url,fragmentOptions);
+		
+		fragmentOptions.fragmentManager.beginTransaction().replace(containerViewId , fragment).addToBackStack(null).commit();
+	}
+	
+	private Fragment parseFragmentUrl(String url, FragmentOptions fragmentOptions) {
+		String[] givenParts = url.split("/");
+		int length = givenParts.length;
+		
+		if (length > 0) {
+			if (fragmentOptions.mArg==null) {
+				fragmentOptions.mArg = new Bundle();
+			}
+			
+			for (int i=0;i<length;i=i+2){
+				fragmentOptions.mArg.putString(givenParts[i], givenParts[i+1]);
+			}
+			
+			fragmentOptions.mFragmentInstnace.setArguments(fragmentOptions.mArg);
+		}
+
+		return fragmentOptions.mFragmentInstnace;
+	}
+
 	/**
 	 * intent增加额外的flag
 	 * @param intent
