@@ -19,6 +19,9 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 
 import com.alibaba.fastjson.JSON;
@@ -83,6 +86,7 @@ public class RestClient {
 	private boolean multipart;
 	private boolean ignoreCloseExceptions = true;
 	private boolean uncompress = false;
+	private boolean form;
 	
 	private URL url;
 	private String requestMethod;
@@ -227,6 +231,21 @@ public class RestClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		String body = request.body();
+		callback.onSuccess(body);
+	}
+	
+	/**
+	 * 异步发起post请求
+	 * @param url
+	 * @param map 以form形式传递数据
+	 * @param callback
+	 * @throws RestException
+	 */
+	public static void post(String url,Map<?, ?> map,HttpResponseHandler callback) throws RestException {
+		System.out.println("post url="+url+"\n"+"form map="+map.toString());
+		
+		RestClient request = new RestClient(url, RestConstant.METHOD_POST).form(map);
 		String body = request.body();
 		callback.onSuccess(body);
 	}
@@ -654,6 +673,76 @@ public class RestClient {
 		try {
 			openOutput();
 			copy(input, output);
+		} catch (IOException e) {
+			throw new RestException(e);
+		}
+		return this;
+	}
+
+	/**
+	 * 表单数据写入request body
+	 * 
+	 * @param values
+	 * @return RestClient
+	 * @throws RestException
+	 */
+	public RestClient form(final Map<?, ?> values) throws RestException {
+		return form(values, RestConstant.CHARSET_UTF8);
+	}
+
+	/**
+	 * 表单数据写入request body
+	 * 
+	 * @param values
+	 * @param charset
+	 * @return RestClient
+	 * @throws RestException
+	 */
+	public RestClient form(final Map<?, ?> values, final String charset)
+			throws RestException {
+		if (!values.isEmpty())
+			for (Entry<?, ?> entry : values.entrySet())
+				form(entry, charset);
+		return this;
+	}
+
+	public RestClient form(final Entry<?, ?> entry) throws RestException {
+		return form(entry, RestConstant.CHARSET_UTF8);
+	}
+
+	public RestClient form(final Entry<?, ?> entry, final String charset)
+			throws RestException {
+		return form(entry.getKey(), entry.getValue(), charset);
+	}
+
+	/**
+	 * 以name/value值键对作为表单数据，写入request body
+	 * @param name
+	 * @param value
+	 * @return
+	 * @throws RestException
+	 */
+	public RestClient form(final Object name, final Object value)
+			throws RestException {
+		return form(name, value, RestConstant.CHARSET_UTF8);
+	}
+
+	public RestClient form(final Object name, final Object value, String charset)
+			throws RestException {
+		final boolean first = !form;
+		if (first) {
+			contentType(RestConstant.CONTENT_TYPE_FORM, charset);
+			form = true;
+		}
+		charset = RestUtil.getValidCharset(charset);
+		try {
+			openOutput();
+			if (!first)
+				output.write('&');
+			output.write(URLEncoder.encode(name.toString(), charset));
+			output.write('=');
+			if (value != null)
+				output.write(URLEncoder.encode(value.toString(), charset));
 		} catch (IOException e) {
 			throw new RestException(e);
 		}
