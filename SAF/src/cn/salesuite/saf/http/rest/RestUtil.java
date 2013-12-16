@@ -4,6 +4,7 @@
 package cn.salesuite.saf.http.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.alibaba.fastjson.JSON;
 
@@ -34,5 +35,16 @@ public class RestUtil {
 	 */
     public static <T> T parseAs(Class<T> cls,String body) throws IOException {
     	return JSON.parseObject(body, cls);
+    }
+    
+	/**
+	 * 根据返回的http body内容转换成json对象数组
+	 * @param cls
+	 * @param body
+	 * @return
+	 * @throws IOException
+	 */
+    public static <T> ArrayList<T> parseArray(Class<T> cls,String body) throws IOException {
+    	return (ArrayList<T>) JSON.parseArray(body, cls);
     }
 }
