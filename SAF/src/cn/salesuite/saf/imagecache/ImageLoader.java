@@ -78,6 +78,23 @@ public class ImageLoader {
             imageView.setImageResource(imageId);
         }
     }
+    
+    /**
+     * 显示图片，可自定义默认显示的图片
+     * @param url
+     * @param imageView
+     * @param options 图片带JobOptions选项，可变成画圆角图形
+     */
+    public void displayImage(String url, ImageView imageView, final JobOptions options) {
+        imageViews.put(imageView, url);
+        Bitmap bitmap=memoryCache.get(url);
+        if(bitmap!=null) {
+        	imageView.setImageBitmap(bitmap);
+        } else {
+            queuePhoto(url, imageView, stub_id,options);
+            imageView.setImageResource(stub_id);
+        }
+    }
 
     /**
      * 显示图片，可自定义默认显示的图片
