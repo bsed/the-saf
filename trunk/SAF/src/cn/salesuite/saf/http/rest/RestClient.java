@@ -249,7 +249,7 @@ public class RestClient {
 		String body = request.body();
 		callback.onSuccess(body);
 	}
-
+	
 	/**
 	 * 发起put请求
 	 * 
@@ -748,7 +748,144 @@ public class RestClient {
 		}
 		return this;
 	}
+
+	/**
+	 * 写multipart请求到request body
+	 * 
+	 * @param name
+	 * @param part
+	 * @return RestClient
+	 */
+	public RestClient part(final String name, final String part) {
+		return part(name, null, part);
+	}
+
+	/**
+	 * 写multipart请求到request body
+	 * 
+	 * @param name
+	 * @param filename
+	 * @param part
+	 * @return RestClient
+	 * @throws RestException
+	 */
+	public RestClient part(final String name, final String filename,
+			final String part) throws RestException {
+		return part(name, filename, null, part);
+	}
+
+	/**
+	 * 写multipart请求到request body
+	 * 
+	 * @param name
+	 * @param filename
+	 * @param contentType
+	 *            value of the Content-Type part header
+	 * @param part
+	 * @return RestClient
+	 * @throws RestException
+	 */
+	public RestClient part(final String name, final String filename,
+			final String contentType, final String part) throws RestException {
+		try {
+			startPart();
+			writePartHeader(name, filename, contentType);
+			output.write(part);
+		} catch (IOException e) {
+			throw new RestException(e);
+		}
+		return this;
+	}
+	  
+	/**
+	 * 写multipart请求到request body
+	 * 
+	 * @param name
+	 * @param part
+	 * @return RestClient
+	 * @throws RestException
+	 */
+	public RestClient part(final String name, final InputStream part)
+			throws RestException {
+		return part(name, null, null, part);
+	}
 	
+	/**
+	 * 写multipart请求到request body
+	 * 
+	 * @param name
+	 * @param filename
+	 * @param contentType
+	 *            value of the Content-Type part header
+	 * @param part
+	 * @return RestClient
+	 * @throws RestException
+	 */
+	public RestClient part(final String name, final String filename,
+			final String contentType, final InputStream part)
+			throws RestException {
+		try {
+			startPart();
+			writePartHeader(name, filename, contentType);
+			copy(part, output);
+		} catch (IOException e) {
+			throw new RestException(e);
+		}
+		return this;
+	}
+	
+	/**
+	 * 开始拼multipart部分
+	 * 
+	 * @return RestClient
+	 * @throws IOException
+	 */
+	protected RestClient startPart() throws IOException {
+		if (!multipart) {
+			multipart = true;
+			contentType(RestConstant.CONTENT_TYPE_MULTIPART).openOutput();
+			output.write("--" + RestConstant.BOUNDARY + RestConstant.CRLF);
+		} else
+			output.write(RestConstant.CRLF + "--" + RestConstant.BOUNDARY + RestConstant.CRLF);
+		return this;
+	}
+
+	/**
+	 * 写part header
+	 * 
+	 * @param name
+	 * @param filename
+	 * @param contentType
+	 * @return RestClient
+	 * @throws IOException
+	 */
+	protected RestClient writePartHeader(final String name,
+			final String filename, final String contentType) throws IOException {
+		final StringBuilder partBuffer = new StringBuilder();
+		partBuffer.append("form-data; name=\"").append(name);
+		if (filename != null)
+			partBuffer.append("\"; filename=\"").append(filename);
+		partBuffer.append('"');
+		partHeader("Content-Disposition", partBuffer.toString());
+		if (contentType != null)
+			partHeader(RestConstant.HEADER_CONTENT_TYPE, contentType);
+		return send(RestConstant.CRLF);
+	}
+	
+	/**
+	 * 写入multipart header到response body
+	 * 
+	 * @param name
+	 * @param value
+	 * @return RestClient
+	 * @throws RestException
+	 * @throws IOException 
+	 */
+	public RestClient partHeader(final String name, final String value)
+			throws RestException, IOException {
+		return send(name).send(": ").send(value).send(RestConstant.CRLF);
+	}
+	  
 	/**
 	 * 设置header的Content-Type
 	 * 
