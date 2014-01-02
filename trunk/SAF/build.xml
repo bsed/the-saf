@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="SAF">
-	<description>SAF Project v1.0</description>
+	<description>SAF Project v1.1</description>
 	
 	<tstamp/>
 	<property environment="env" />
@@ -8,16 +8,17 @@
 	<property name="project_name" value="SAF"/>
 	<property name="target" value="1.6" />
 	<property name="source" value="1.6" />
+	<property name="version" value="1.1" />
 	<property name="src" value="src" />
 	<property name="dest_dir" value="build" />
 	<property name="build_dir" value="${dest_dir}/classes" />
-	<property name="jar_all_name" value="${project_name}-all-${DSTAMP}.jar" />
-	<property name="jar_core_name" value="${project_name}-core-${DSTAMP}.jar" />
-	<property name="jar_util_name" value="${project_name}-utils-${DSTAMP}.jar" />
-	<property name="jar_annotation_name" value="${project_name}-annotation-${DSTAMP}.jar" />
-	<property name="jar_orm_name" value="${project_name}-orm-${DSTAMP}.jar" />
-	<property name="jar_http_name" value="${project_name}-http-${DSTAMP}.jar" />
-	<property name="jar_router_name" value="${project_name}-router-${DSTAMP}.jar" />
+	<property name="jar_all_name" value="${project_name}-all-${version}.jar" />
+	<property name="jar_core_name" value="${project_name}-core-${version}.jar" />
+	<property name="jar_util_name" value="${project_name}-utils-${version}.jar" />
+	<property name="jar_annotation_name" value="${project_name}-annotation-${version}.jar" />
+	<property name="jar_orm_name" value="${project_name}-orm-${version}.jar" />
+	<property name="jar_http_name" value="${project_name}-http-${version}.jar" />
+	<property name="jar_router_name" value="${project_name}-router-${version}.jar" />
 	<property name="javadoc_dir" value="${dest_dir}/javadoc" />
 	<property name="proguard" value="${basedir}/proguard"/>
 	<property name="proguard.lib" value="${proguard}/lib"/>
@@ -81,7 +82,7 @@
 			                 encoding="UTF-8" docencoding="UTF-8" charset="UTF-8">
 			<classpath refid="build_classpath" />
 			<packageset dir="${src}" defaultexcludes="yes" />
-			<bottom><![CDATA[<b>SAF API Documents v1.0</b>, <i>Copyright 2012-2013, <a href="http://www.salesuite.cn" target="_blank">http://www.salesuite.cn</a>, All Rights Reserved.</i>]]></bottom>
+			<bottom><![CDATA[<b>SAF API Documents v1.0</b>, <i>Copyright 2012-2014, <a href="http://www.salesuite.cn" target="_blank">http://www.salesuite.cn</a>, All Rights Reserved.</i>]]></bottom>
 		</javadoc>
 	</target>
 
