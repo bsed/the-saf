@@ -6,6 +6,8 @@ package cn.salesuite.saf.imagecache;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -29,6 +31,8 @@ public class ImageLoader {
     int stub_id;
     Handler handler=new Handler();
     private Context mContext;
+    private final PriorityBlockingQueue<ImageRequest> mQueue = new PriorityBlockingQueue<ImageRequest>();
+    private AtomicInteger mSequenceGenerator = new AtomicInteger();
     
     public ImageLoader(Context context,int default_img_id){
     	memoryCache = new MemoryCache();
@@ -115,19 +119,22 @@ public class ImageLoader {
     }
         
     private void queuePhoto(String url, ImageView imageView) {
-        PhotoToLoad p=new PhotoToLoad(url, imageView);
-        backgroundExecutor.submit(new PhotosLoader(p));
+        ImageRequest p=new ImageRequest(url, imageView);
+        mQueue.add(p);
+        backgroundExecutor.submit(new PhotosLoader());
     }
     
     private void queuePhoto(String url, ImageView imageView, int imageId) {
-        PhotoToLoad p=new PhotoToLoad(url, imageView, imageId);
-        backgroundExecutor.submit(new PhotosLoader(p));
+        ImageRequest p=new ImageRequest(url, imageView, imageId);
+        mQueue.add(p);
+        backgroundExecutor.submit(new PhotosLoader());
     }
     
     private void queuePhoto(String url, ImageView imageView, int imageId,
 			JobOptions options) {
-        PhotoToLoad p=new PhotoToLoad(url, imageView, imageId, options);
-        backgroundExecutor.submit(new PhotosLoader(p));
+        ImageRequest p=new ImageRequest(url, imageView, imageId, options);
+        mQueue.add(p);
+        backgroundExecutor.submit(new PhotosLoader());
 	}
     
     public Bitmap getBitmap(String url,ImageView imageView) {
@@ -178,57 +185,69 @@ public class ImageLoader {
         }
     }
     
-    //Task for the queue
-    private class PhotoToLoad {
+    //ImageRequest
+    private class ImageRequest implements Comparable<ImageRequest>{
         public String url;
         public ImageView imageView;
         public int imageId;
         public JobOptions options;
+        public Integer mSequence;
         
-        public PhotoToLoad(String u, ImageView i){
+        public ImageRequest(String u, ImageView i){
             url=u; 
             imageView=i;
             this.imageId = stub_id;
+            this.mSequence = getSequenceNumber();
         }
         
-        public PhotoToLoad(String u, ImageView i, int imageId){
+        public ImageRequest(String u, ImageView i, int imageId){
             url=u; 
             imageView=i;
             this.imageId = imageId;
+            this.mSequence = getSequenceNumber();
         }
         
-        public PhotoToLoad(String u, ImageView i, int imageId, JobOptions options){
+        public ImageRequest(String u, ImageView i, int imageId, JobOptions options){
             url=u; 
             imageView=i;
             this.imageId = imageId;
             this.options = options;
+            this.mSequence = getSequenceNumber();
         }
+
+		@Override
+		public int compareTo(ImageRequest other) {
+	        return this.mSequence - other.mSequence;
+		}
     }
     
     class PhotosLoader implements Runnable {
-        PhotoToLoad photoToLoad;
-        PhotosLoader(PhotoToLoad photoToLoad){
-            this.photoToLoad=photoToLoad;
-        }
+        ImageRequest request;
         
         @Override
         public void run() {
-            if(imageViewReused(photoToLoad))
+        	try {
+				request = mQueue.take();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        	
+            if(imageViewReused(request))
                 return;
-            Bitmap bmp=getBitmap(photoToLoad.url,photoToLoad.imageView);
-            if (photoToLoad.options!=null) {
-            	memoryCache.put(photoToLoad.url, BitmapHelper.roundCorners(bmp , photoToLoad.options.cornerRadius));
+            Bitmap bmp=getBitmap(request.url,request.imageView);
+            if (request.options!=null) {
+            	memoryCache.put(request.url, BitmapHelper.roundCorners(bmp , request.options.cornerRadius));
             } else {
-            	memoryCache.put(photoToLoad.url, bmp);
+            	memoryCache.put(request.url, bmp);
             }
-            if(imageViewReused(photoToLoad))
+            if(imageViewReused(request))
                 return;
-            BitmapDisplayer bd=new BitmapDisplayer(bmp, photoToLoad);
+            BitmapDisplayer bd=new BitmapDisplayer(bmp, request);
             handler.post(bd);
         }
     }
     
-    boolean imageViewReused(PhotoToLoad photoToLoad){
+    boolean imageViewReused(ImageRequest photoToLoad){
         String tag=imageViews.get(photoToLoad.imageView);
         if(tag==null || !tag.equals(photoToLoad.url))
             return true;
@@ -238,9 +257,9 @@ public class ImageLoader {
     //Used to display bitmap in the UI thread
     class BitmapDisplayer implements Runnable {
         Bitmap bitmap;
-        PhotoToLoad photoToLoad;
+        ImageRequest photoToLoad;
         
-        public BitmapDisplayer(Bitmap b, PhotoToLoad p){
+        public BitmapDisplayer(Bitmap b, ImageRequest p){
         	bitmap=b;
         	photoToLoad=p;
         }
@@ -280,6 +299,14 @@ public class ImageLoader {
         }
     }
 
+    /**
+     * Sequence生成器
+     * @return
+     */
+    public int getSequenceNumber() {
+        return mSequenceGenerator.incrementAndGet();
+    }
+    
     /**
      * 清空所有缓存
      */
