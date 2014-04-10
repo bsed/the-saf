@@ -28,7 +28,7 @@ import cn.salesuite.saf.inject.annotation.InjectSystemService;
 import cn.salesuite.saf.inject.annotation.InjectView;
 
 /**
- * 可以注入view、resource、systemservice<br>
+ * 可以注入view、resource、systemservice等等<br>
  * 在Activity中使用注解，首先需要在onCreate（）中使用Injector.injectInto(this);<br>
  * 在Dialog中使用注解，首先需要在构造方法中使用Injector.injectInto(this);<br>
  * 在Fragment中使用注解，首先需要在onCreateView（）中使用Injector.injectInto(this,view);

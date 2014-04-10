@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注入android基本类型的组件
+ * 注入android的组件，包括基本类型的组件和自定义组件
  * @author Tony Shen
  *
  */
