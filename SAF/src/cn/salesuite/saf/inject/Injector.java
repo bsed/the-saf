@@ -5,6 +5,7 @@ package cn.salesuite.saf.inject;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,11 +18,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import cn.salesuite.saf.inject.annotation.InflateLayout;
 import cn.salesuite.saf.inject.annotation.InjectExtra;
-import cn.salesuite.saf.inject.annotation.InjectSupportFragment;
 import cn.salesuite.saf.inject.annotation.InjectResource;
+import cn.salesuite.saf.inject.annotation.InjectSupportFragment;
 import cn.salesuite.saf.inject.annotation.InjectSystemService;
 import cn.salesuite.saf.inject.annotation.InjectView;
 
@@ -34,7 +36,7 @@ import cn.salesuite.saf.inject.annotation.InjectView;
  *
  */
 public class Injector {
-    public static boolean TEST_FLAG;
+
     public static String TAG = "Injector";
 
     protected final Context context;
@@ -59,6 +61,12 @@ public class Injector {
 			}
 		},
 	    FRAGMENT {
+			@Override
+			public View findById(Object source, int id) {
+				return ((View) source).findViewById(id);
+			}
+		},
+		VIEW {
 			@Override
 			public View findById(Object source, int id) {
 				return ((View) source).findViewById(id);
@@ -120,6 +128,19 @@ public class Injector {
         activity = null;
         extras = null;
 	}
+	
+	public Injector(View view) {
+        if (view == null) {
+            throw new IllegalArgumentException("view may not be null");
+        }
+        this.target = view;
+        resources = view.getContext().getResources();
+        context = view.getContext();
+        clazz = target.getClass();
+        activity = null;
+        extras = null;
+        fragmentView = null;
+	}
 
 	/**
 	 * 在Activity中使用注解
@@ -159,12 +180,43 @@ public class Injector {
         return injector;
     }
 
+    public static <T extends ViewGroup> T build(Context context, Class<T> clazz) {
+        T view = null;
+
+        InflateLayout inflateLayout = clazz.getAnnotation(InflateLayout.class);
+        if (inflateLayout != null) {
+            int layoutResId = inflateLayout.id();
+            
+            try {
+				view = clazz.getConstructor(Context.class).newInstance(context);
+	            View.inflate(context, layoutResId, view);
+	            
+	        	Injector injector = new Injector(view);
+	            injector.injectAll(Finder.VIEW);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			}
+        }
+
+        return view;
+    }
+    
 	private void injectAll(Finder finder) {
         injectFields(finder);
 	}
 
 	private void injectFields(Finder finder) {
-		long start = System.currentTimeMillis();
+
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             Annotation[] annotations = field.getAnnotations();
@@ -174,18 +226,21 @@ public class Injector {
                     View view = null;
                 	switch (finder) {  
                     case DIALOG:
-                    	view = finder.DIALOG.findById(target, id);
+                    	view = Finder.DIALOG.findById(target, id);
                         break;  
                     case ACTIVITY:
                         if (activity == null) {
                             throw new InjectException("Views can be injected only in activities (member " + field.getName() + " in "
                                     + context.getClass());
                         }
-                    	view = finder.ACTIVITY.findById(activity, id);
+                    	view = Finder.ACTIVITY.findById(activity, id);
                         break;
                     case FRAGMENT:
-                    	view = finder.FRAGMENT.findById(fragmentView, id);
-                        break;  
+                    	view = Finder.FRAGMENT.findById(fragmentView, id);
+                        break;
+                    case VIEW:
+                    	view = Finder.VIEW.findById(target, id);
+                        break;
                     }
                 	
                     if (view == null) {
@@ -211,10 +266,6 @@ public class Injector {
                     injectIntoField(field, fragment);
                 }
             }
-        }
-        if (TEST_FLAG) {
-            long time = System.currentTimeMillis() - start;
-            Log.d(TAG, "Injected fields in " + time + "ms (" + fields.length + " fields checked)");
         }
 	}
 	
