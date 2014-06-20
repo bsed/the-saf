@@ -254,13 +254,14 @@ public class JodaUtils {
 	 * 2：日
 	 * 3：时
 	 * 4：分
+	 * 5：秒
 	 * 如果比较分:包含以上值，是包含关系
 	 */
 	public static boolean compareIsBefore(Date src, Date dest,int unit){
 		if(src == null || dest == null){
 			return false;
 		}
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHss");
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
 		String srcStr = format.format(src);
 		String destStr = format.format(dest);
 		boolean result = false;
@@ -287,6 +288,11 @@ public class JodaUtils {
 				break;
 			case 4:
 				if(Long.parseLong(srcStr.substring(0,12)) < Long.parseLong(destStr.substring(0,12))){
+					result = true;
+				}
+				break;
+			case 5:
+				if(Long.parseLong(srcStr.substring(0,14)) < Long.parseLong(destStr.substring(0,14))){
 					result = true;
 				}
 				break;
