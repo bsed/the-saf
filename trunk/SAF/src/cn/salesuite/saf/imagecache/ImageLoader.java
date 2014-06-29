@@ -33,8 +33,9 @@ public class ImageLoader {
     private Context mContext;
     private final PriorityBlockingQueue<ImageRequest> mQueue = new PriorityBlockingQueue<ImageRequest>();
     private AtomicInteger mSequenceGenerator = new AtomicInteger();
-    
-    public ImageLoader(Context context,int default_img_id){
+    private boolean enableDiskCache = true;
+
+	public ImageLoader(Context context,int default_img_id){
     	memoryCache = new MemoryCache();
     	diskCache = new DiskLruImageCache(context);
     	backgroundExecutor = new BackgroundExecutor(8);
@@ -149,13 +150,18 @@ public class ImageLoader {
     }
     
     private Bitmap getBitmapFromDiskCache(final String urlString) {
-        final String key = getDiskCacheKey(urlString);
-        final Bitmap cachedBitmap = diskCache.getBitmap(key);
+    	if (enableDiskCache) {
+            final String key = getDiskCacheKey(urlString);
+            final Bitmap cachedBitmap = diskCache.getBitmap(key);
 
-        if (cachedBitmap == null)
-            return null;
+            if (cachedBitmap == null)
+                return null;
 
-        return cachedBitmap;
+            return cachedBitmap;
+    	} else {
+    		return null;
+    	}
+
     }
 
     private static String getDiskCacheKey(final String urlString) {
@@ -178,10 +184,12 @@ public class ImageLoader {
     private void addBitmapToCache(final String key, final Bitmap bitmap) {
         memoryCache.put(key, bitmap);
 
-        final String diskCacheKey = getDiskCacheKey(key);
+        if (!enableDiskCache) {
+            final String diskCacheKey = getDiskCacheKey(key);
 
-        if ((diskCache != null) && !diskCache.containsKey(diskCacheKey)) {
-            diskCache.put(diskCacheKey, bitmap);
+            if ((diskCache != null) && !diskCache.containsKey(diskCacheKey)) {
+                diskCache.put(diskCacheKey, bitmap);
+            }
         }
     }
     
@@ -324,5 +332,13 @@ public class ImageLoader {
 
 	public MemoryCache getMemoryCache() {
 		return memoryCache;
+	}
+	
+    public boolean isEnableDiskCache() {
+		return enableDiskCache;
+	}
+
+	public void setEnableDiskCache(boolean enableDiskCache) {
+		this.enableDiskCache = enableDiskCache;
 	}
 }
